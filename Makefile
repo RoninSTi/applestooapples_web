@@ -4,7 +4,7 @@ set-prod-environment:
 	heroku config:set REACT_APP_GOOGLE_PLACE_API_KEY=AIzaSyBTTjWmcEQzb9xWo02nbND_-CiAJf-0-E0
 
 set-staging-environment:
-	heroku config:set REACT_APP_API_BASE_URL=https://applestooapples-api-staging.herokuapp.com/ && \
+	heroku config:set REACT_APP_API_BASE_URL=https://applestooapples-api-staging.herokuapp.com/
 
 deploy-prod:
 	git push prod master

@@ -97,7 +97,8 @@ const AuthContext = createContext({
   logout: () => { },
   magic: () => { },
   register: () => Promise.resolve(),
-  updateSession: () => Promise.resolve()
+  updateSession: () => Promise.resolve(),
+  updateUser: () => { },
 });
 
 export const AuthProvider = ({ children }) => {
@@ -185,6 +186,16 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const updateUser = user => {
+    dispatch({
+      type: 'UPDATE',
+      payload: {
+        isAuthenticated: state.isAuthenticated,
+        user
+      }
+    });
+  }
+
   useEffect(() => {
     const initialise = async () => {
       try {
@@ -240,7 +251,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         magic,
         register,
-        updateSession
+        updateSession,
+        updateUser
       }}
     >
       {children}

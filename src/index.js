@@ -8,6 +8,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-jsx';
 import 'nprogress/nprogress.css';
+import 'react-phone-number-input/style.css'
 import 'src/__mocks__';
 import 'src/assets/css/prism.css';
 import 'src/mixins/chartjs';

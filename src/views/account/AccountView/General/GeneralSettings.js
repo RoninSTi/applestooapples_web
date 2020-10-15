@@ -17,8 +17,10 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import wait from 'src/utils/wait';
-import countries from './countries';
+import PhoneInput from 'react-phone-number-input'
+import PhoneTextField from 'src/components/PhoneInput'
+import api from 'src/utils/api'
+import useAuth from 'src/hooks/useAuth'
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -28,29 +30,21 @@ const GeneralSettings = ({ className, user, ...rest }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
+  const { updateUser } = useAuth();
+
   return (
     <Formik
       enableReinitialize
       initialValues={{
-        canHire: user.canHire || false,
-        city: user.city || '',
-        country: user.country || '',
         email: user.email || '',
-        isPublic: user.isPublic || false,
         name: user.name || '',
         phone: user.phone || '',
-        state: user.state || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        canHire: Yup.bool(),
-        city: Yup.string().max(255),
-        country: Yup.string().max(255),
         email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-        isPublic: Yup.bool(),
         name: Yup.string().max(255).required('Name is required'),
         phone: Yup.string(),
-        state: Yup.string()
       })}
       onSubmit={async (values, {
         resetForm,
@@ -59,8 +53,16 @@ const GeneralSettings = ({ className, user, ...rest }) => {
         setSubmitting
       }) => {
         try {
-          // NOTE: Make API request
-          await wait(200);
+          const response = await api({
+            method: 'put',
+            url: `user/${user.id}`,
+            data: {
+              ...values
+            }
+          })
+
+          updateUser(response.data)
+
           resetForm();
           setStatus({ success: true });
           setSubmitting(false);
@@ -81,155 +83,107 @@ const GeneralSettings = ({ className, user, ...rest }) => {
         handleChange,
         handleSubmit,
         isSubmitting,
+        setFieldValue,
         touched,
         values
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <Card
-            className={clsx(classes.root, className)}
-            {...rest}
-          >
-            <CardHeader title="Profile" />
-            <Divider />
-            <CardContent>
-              <Grid
-                container
-                spacing={4}
-              >
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <TextField
-                    error={Boolean(touched.name && errors.name)}
-                    fullWidth
-                    helperText={touched.name && errors.name}
-                    label="Name"
-                    name="name"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.name}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <TextField
-                    error={Boolean(touched.email && errors.email)}
-                    fullWidth
-                    helperText={touched.email && errors.email ? errors.email : 'We will use this email to contact you'}
-                    label="Email Address"
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    required
-                    type="email"
-                    value={values.email}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <TextField
-                    error={Boolean(touched.phone && errors.phone)}
-                    fullWidth
-                    helperText={touched.phone && errors.phone}
-                    label="Phone Number"
-                    name="phone"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.phone}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <Autocomplete
-                    getOptionLabel={(option) => option.text}
-                    options={countries}
-                    renderInput={(params) => (
-                      <TextField
-                        fullWidth
-                        label="Country"
-                        name="country"
-                        onChange={handleChange}
-                        variant="outlined"
-                        {...params}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <TextField
-                    error={Boolean(touched.state && errors.state)}
-                    fullWidth
-                    helperText={touched.state && errors.state}
-                    label="State/Region"
-                    name="state"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.state}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <TextField
-                    error={Boolean(touched.city && errors.city)}
-                    fullWidth
-                    helperText={touched.city && errors.city}
-                    label="City"
-                    name="city"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.city}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-              {errors.submit && (
-                <Box mt={3}>
-                  <FormHelperText error>
-                    {errors.submit}
-                  </FormHelperText>
-                </Box>
-              )}
-            </CardContent>
-            <Divider />
-            <Box
-              p={2}
-              display="flex"
-              justifyContent="flex-end"
+      }) => {
+        const handlePhoneChange = number => {
+          setFieldValue('phone', number, true)
+        }
+
+        return (
+          <form onSubmit={handleSubmit}>
+            <Card
+              className={clsx(classes.root, className)}
+              {...rest}
             >
-              <Button
-                color="secondary"
-                disabled={isSubmitting}
-                type="submit"
-                variant="contained"
+              <CardHeader title="Profile" />
+              <Divider />
+              <CardContent>
+                <Grid
+                  container
+                  spacing={4}
+                >
+                  <Grid
+                    item
+                    md={6}
+                    xs={12}
+                  >
+                    <TextField
+                      error={Boolean(touched.name && errors.name)}
+                      fullWidth
+                      helperText={touched.name && errors.name}
+                      label="Name"
+                      name="name"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.name}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    md={6}
+                    xs={12}
+                  >
+                    <PhoneInput
+                      defaultCountry="US"
+                      error={Boolean(touched.phone && errors.phone)}
+                      inputComponent={PhoneTextField}
+                      name='phone'
+                      onBlur={handleBlur}
+                      onChange={handlePhoneChange}
+                      placeholder='Phone Number'
+                      value={values.phone}
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    md={12}
+                    xs={12}
+                  >
+                    <TextField
+                      error={Boolean(touched.email && errors.email)}
+                      fullWidth
+                      helperText={touched.email && errors.email ? errors.email : 'We will use this email to contact you'}
+                      label="Email Address"
+                      name="email"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      required
+                      type="email"
+                      value={values.email}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+                {errors.submit && (
+                  <Box mt={3}>
+                    <FormHelperText error>
+                      {errors.submit}
+                    </FormHelperText>
+                  </Box>
+                )}
+              </CardContent>
+              <Divider />
+              <Box
+                p={2}
+                display="flex"
+                justifyContent="flex-end"
               >
-                Save Changes
+                <Button
+                  color="secondary"
+                  disabled={isSubmitting}
+                  type="submit"
+                  variant="contained"
+                >
+                  Save Changes
               </Button>
-            </Box>
-          </Card>
-        </form>
-      )}
+              </Box>
+            </Card>
+          </form>
+        )
+      }}
     </Formik>
   );
 };
