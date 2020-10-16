@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { reducer as accountReducer } from 'src/slices/account'
+import { reducer as accountReducer } from 'src/slices/account';
+import { reducer as addressReducer } from 'src/slices/address';
 import { reducer as calendarReducer } from 'src/slices/calendar';
 import { reducer as chatReducer } from 'src/slices/chat';
 import { reducer as formReducer } from 'redux-form';
@@ -9,6 +10,7 @@ import { reducer as notificationReducer } from 'src/slices/notification';
 
 const rootReducer = combineReducers({
   account: accountReducer,
+  address: addressReducer,
   calendar: calendarReducer,
   chat: chatReducer,
   form: formReducer,

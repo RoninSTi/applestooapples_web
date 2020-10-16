@@ -16,7 +16,6 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import PhoneInput from 'react-phone-number-input'
 import PhoneTextField from 'src/components/PhoneInput'
 import api from 'src/utils/api'
@@ -36,12 +35,14 @@ const GeneralSettings = ({ className, user, ...rest }) => {
     <Formik
       enableReinitialize
       initialValues={{
+        companyName: user.companyName || '',
         email: user.email || '',
         name: user.name || '',
         phone: user.phone || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
+        companyName: Yup.string(),
         email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
         name: Yup.string().max(255).required('Name is required'),
         phone: Yup.string(),
@@ -124,6 +125,23 @@ const GeneralSettings = ({ className, user, ...rest }) => {
                   <Grid
                     item
                     md={6}
+                    xs={12}
+                  >
+                    <TextField
+                      error={Boolean(touched.companyName && errors.companyName)}
+                      fullWidth
+                      helperText={touched.companyName && errors.companyName}
+                      label="Company Name"
+                      name="companyName"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.companyName}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    md={12}
                     xs={12}
                   >
                     <PhoneInput

@@ -8,6 +8,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
+import Addresses from './Addresses';
 import Header from './Header';
 import General from './General';
 import Subscription from './Subscription';
@@ -30,6 +31,7 @@ const AccountView = () => {
   const tabs = [
     { value: 'general', label: 'General' },
     { value: 'users', label: 'Users' },
+    { value: 'addresses', label: 'Addresses' },
     { value: 'subscription', label: 'Subscription' },
     { value: 'notifications', label: 'Notifications' },
   ];
@@ -64,6 +66,7 @@ const AccountView = () => {
         </Box>
         <Divider />
         <Box mt={3}>
+          {currentTab === 'addresses' && <Addresses />}
           {currentTab === 'general' && <General />}
           {currentTab === 'subscription' && <Subscription />}
           {currentTab === 'notifications' && <Notifications />}
