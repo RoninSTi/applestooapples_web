@@ -99,7 +99,6 @@ const AddressesListView = () => {
             city: addressToEdit?.city || '',
             companyName: addressToEdit?.companyName || '',
             country: addressToEdit?.country || 'US',
-            isDefault: addressToEdit?.isDefault || false,
             name: addressToEdit?.name || '',
             nickname: addressToEdit?.nickname || '',
             postalCode: addressToEdit?.postalCode || '',
@@ -112,7 +111,6 @@ const AddressesListView = () => {
             city: Yup.string(),
             companyName: Yup.string(),
             country: Yup.string(),
-            isDefault: Yup.bool(),
             name: Yup.string(),
             nickname: Yup.string().required('Nickname is required'),
             postalCode: Yup.string(),
@@ -336,19 +334,6 @@ const AddressesListView = () => {
                             </option>
                           ))}
                         </TextField>
-                      </Grid>
-                      <Grid item>
-                        <FormGroup>
-                          <FormControlLabel
-                            control={(
-                              <Checkbox
-                                onChange={handleChange}
-                                checked={values.isDefault}
-                                name='isDefault' />
-                            )}
-                            label="Make default"
-                          />
-                        </FormGroup>
                       </Grid>
                     </Grid>
                     {errors.submit && (

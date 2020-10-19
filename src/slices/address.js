@@ -19,6 +19,11 @@ const slice = createSlice({
 
       state.addresses = addresses;
     },
+    deleteAddress(state, action) {
+      const { addresses } = action.payload;
+
+      state.addresses = addresses;
+    },
     updateAddress(state, action) {
       const { addresses } = action.payload
 
@@ -44,6 +49,15 @@ export const createAddress = ({ accountId, data }) => async (dispatch) => {
 
   dispatch(slice.actions.createAddress({ addresses: response.data }));
 };
+
+export const deleteAddress = ({ accountId, addressId }) => async dispatch => {
+  const response = await api({
+    method: 'delete',
+    url: `account/${accountId}/address/${addressId}`
+  })
+
+  dispatch(slice.actions.deleteAddress({ addresses: response.data }))
+}
 
 export const updateAddress = ({ accountId, addressId, data }) => async (dispatch) => {
   const response = await api({

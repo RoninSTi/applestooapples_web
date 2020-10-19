@@ -24,9 +24,8 @@ import {
   Trash as TrashIcon,
   X as XIcon
 } from 'react-feather';
-import api from 'src/utils/api'
 import { useDispatch } from 'src/store'
-import { getAddresses } from 'src/slices/address'
+import { deleteAddress } from 'src/slices/address'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -61,9 +60,7 @@ const Results = ({ accountId, addresses, onClickEdit }) => {
     setIsDeleting(true)
 
     try {
-      await api.delete(`account/${accountId}/user/${addressToDelete.id}`)
-
-      dispatch(getAddresses())
+      await dispatch(deleteAddress({ accountId, addressId: addressToDelete.id}))
     } catch (error) {
       console.log({ error })
     } finally {
@@ -78,80 +75,77 @@ const Results = ({ accountId, addresses, onClickEdit }) => {
     <div>
       <PerfectScrollbar>
         <Box minWidth={700}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  Nickname
+          {addresses.length > 0 ? (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    Nickname
                 </TableCell>
-                <TableCell>
-                  Default
+                  <TableCell align="right">
+                    Actions
                 </TableCell>
-                <TableCell align="right">
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {addresses.map((address) => {
-                return (
-                  <TableRow
-                    hover
-                    key={address.id}
-                  >
-                    <TableCell>
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                      >
-                        <div>
-                          <Link
-                            color="inherit"
-                            component={RouterLink}
-                            to="/app/management/users/1"
-                            variant="h6"
-                          >
-                            {address.nickname}
-                          </Link>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                          >
-                            {`${address.address}${address.address2 ? ` ${address.address2}` : ''}, ${address.city}, ${address.state} ${address.postalCode}`}
-                          </Typography>
-                        </div>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      {address.isDefault ?
-                        <SvgIcon style={{ color: 'green' }} fontSize="small">
-                          <CheckIcon />
-                      </SvgIcon> : null}
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        onClick={() => handleOnClickEdit(address)}
-                      >
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {addresses.map((address) => {
+                  return (
+                    <TableRow
+                      hover
+                      key={address.id}
+                    >
+                      <TableCell>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                        >
+                          <div>
+                            <Link
+                              color="inherit"
+                              component={RouterLink}
+                              to="/app/management/users/1"
+                              variant="h6"
+                            >
+                              {address.nickname}
+                            </Link>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                            >
+                              {`${address.address}${address.address2 ? ` ${address.address2}` : ''}, ${address.city}, ${address.state} ${address.postalCode}`}
+                            </Typography>
+                          </div>
+                        </Box>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          onClick={() => handleOnClickEdit(address)}
+                        >
                           <SvgIcon fontSize="small">
                             <EditIcon />
                           </SvgIcon>
-                      </IconButton>
-                      <IconButton
-                        disabled={isDeleting && addressToDelete?.id === address.id}
-                        onClick={(event) => handleOnClickDelete(event, address)}
-                      >
-                        {isDeleting && addressToDelete?.id === address.id ? <CircularProgress size='sm' /> : (
-                          <SvgIcon fontSize="small">
-                            <TrashIcon />
-                          </SvgIcon>
-                        )}
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                        </IconButton>
+                        <IconButton
+                          disabled={isDeleting && addressToDelete?.id === address.id}
+                          onClick={(event) => handleOnClickDelete(event, address)}
+                        >
+                          {isDeleting && addressToDelete?.id === address.id ? <CircularProgress size='sm' /> : (
+                            <SvgIcon fontSize="small">
+                              <TrashIcon />
+                            </SvgIcon>
+                          )}
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          ) : (
+              <Box>
+                <Typography>No addresses to display.  Add an address by clicking the button above.</Typography>
+              </Box>
+          )}
         </Box>
       </PerfectScrollbar>
       <Popper open={popperIsOpen} anchorEl={anchorEl}>

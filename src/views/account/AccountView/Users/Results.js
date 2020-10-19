@@ -270,7 +270,7 @@ const Results = ({
                           className={classes.avatar}
                           src={user.avatar}
                         >
-                          {getInitials(user.name)}
+                          {user.name && getInitials(user.name)}
                         </Avatar>
                         <div>
                           <Link
