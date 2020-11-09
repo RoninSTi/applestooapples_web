@@ -37,14 +37,16 @@ const GeneralSettings = ({ className, user, ...rest }) => {
       initialValues={{
         companyName: user.companyName || '',
         email: user.email || '',
-        name: user.name || '',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
         phone: user.phone || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
         companyName: Yup.string(),
         email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-        name: Yup.string().max(255).required('Name is required'),
+        firstName: Yup.string().max(255).required('First name is required'),
+        lastName: Yup.string().max(255).required('Last name is required'),
         phone: Yup.string(),
       })}
       onSubmit={async (values, {
@@ -111,20 +113,37 @@ const GeneralSettings = ({ className, user, ...rest }) => {
                     xs={12}
                   >
                     <TextField
-                      error={Boolean(touched.name && errors.name)}
+                      error={Boolean(touched.firstName && errors.firstName)}
                       fullWidth
-                      helperText={touched.name && errors.name}
-                      label="Name"
-                      name="name"
+                      helperText={touched.firstName && errors.firstName}
+                      label="First Name"
+                      name="firstName"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.name}
+                      value={values.firstName}
                       variant="outlined"
                     />
                   </Grid>
                   <Grid
                     item
                     md={6}
+                    xs={12}
+                  >
+                    <TextField
+                      error={Boolean(touched.lastName && errors.lastName)}
+                      fullWidth
+                      helperText={touched.lastName && errors.lastName}
+                      label="Last Name"
+                      name="lastName"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.lastName}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    md={12}
                     xs={12}
                   >
                     <TextField

@@ -100,7 +100,6 @@ const AddressesListView = () => {
             companyName: addressToEdit?.companyName || '',
             country: addressToEdit?.country || 'US',
             name: addressToEdit?.name || '',
-            nickname: addressToEdit?.nickname || '',
             postalCode: addressToEdit?.postalCode || '',
             state: addressToEdit?.state || '',
             submit: null
@@ -112,7 +111,6 @@ const AddressesListView = () => {
             companyName: Yup.string(),
             country: Yup.string(),
             name: Yup.string(),
-            nickname: Yup.string().required('Nickname is required'),
             postalCode: Yup.string(),
             state: Yup.string(),
           })}
@@ -166,20 +164,20 @@ const AddressesListView = () => {
                         xs={12}
                       >
                         <TextField
-                          error={Boolean(touched.nickname && errors.nickname)}
+                          error={Boolean(touched.name && errors.name)}
                           fullWidth
-                          helperText={touched.nickname && errors.nickname}
-                          label="Nickname"
-                          name="nickname"
+                          helperText={touched.name && errors.name}
+                          label="Name"
+                          name="name"
                           onBlur={handleBlur}
                           onChange={handleChange}
-                          value={values.nickname}
+                          value={values.name}
                           variant="outlined"
                         />
                       </Grid>
                       <Grid
                         item
-                        md={6}
+                        md={12}
                         xs={12}
                       >
                         <TextField
@@ -191,23 +189,6 @@ const AddressesListView = () => {
                           onBlur={handleBlur}
                           onChange={handleChange}
                           value={values.companyName}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid
-                        item
-                        md={6}
-                        xs={12}
-                      >
-                        <TextField
-                          error={Boolean(touched.name && errors.name)}
-                          fullWidth
-                          helperText={touched.name && errors.name}
-                          label="Name"
-                          name="name"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.name}
                           variant="outlined"
                         />
                       </Grid>

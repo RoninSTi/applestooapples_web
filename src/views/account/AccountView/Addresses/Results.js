@@ -80,7 +80,7 @@ const Results = ({ accountId, addresses, onClickEdit }) => {
               <TableHead>
                 <TableRow>
                   <TableCell>
-                    Nickname
+                    Address
                 </TableCell>
                   <TableCell align="right">
                     Actions
@@ -100,14 +100,16 @@ const Results = ({ accountId, addresses, onClickEdit }) => {
                           alignItems="center"
                         >
                           <div>
-                            <Link
-                              color="inherit"
-                              component={RouterLink}
-                              to="/app/management/users/1"
+                            <Typography
                               variant="h6"
                             >
-                              {address.nickname}
-                            </Link>
+                              {address.name}
+                            </Typography>
+                            <Typography
+                              variant="h5"
+                            >
+                              {address.companyName}
+                            </Typography>
                             <Typography
                               variant="body2"
                               color="textSecondary"
