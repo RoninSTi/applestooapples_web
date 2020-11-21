@@ -4,9 +4,7 @@ import _ from 'lodash'
 import PropTypes from 'prop-types';
 
 const AccountType = ({ user }) => {
-  const [account] = user.accounts
-
-  const { type } = account
+  const { account: { type } } = user 
 
   return (
     <Typography

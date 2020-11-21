@@ -13,6 +13,7 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
+  Dialog,
   Divider,
   FormHelperText,
   Grid,
@@ -24,28 +25,52 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const Invite = ({ className, ...rest }) => {
+const typeOptions = [
+  {
+    value: 'architect',
+    label: 'Architect'
+  },
+  {
+    value: 'contractor',
+    label: 'Contractor'
+  },
+  {
+    value: 'designer',
+    label: 'Designer'
+  },
+  {
+    value: 'homeowner',
+    label: 'Homeowner'
+  },
+
+];
+
+const Invite = ({ className, isOpen, onCancel, ...rest }) => {
   const classes = useStyles();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const dispatch = useDispatch()
 
-  const account = useSelector(state => state.account.activeAccount)
+  const account = useSelector(state => state.account.account)
+
+  const handleOnClickCancel = () => {
+    onCancel()
+  }
 
   return (
+    <Dialog open={isOpen}>
+
     <Formik
       initialValues={{
         email: '',
-        role: 'super-admin',
-        submit: null
       }}
       validationSchema={Yup.object().shape({
         email: Yup.string()
           .email('Must be a valid email')
           .max(255).required('Email is required'),
-        role: Yup.string()
-          .required('Required')
+        firstName: Yup.string(),
+        lastName: Yup.string(),
       })}
       onSubmit={async (values, {
         resetForm,
@@ -61,6 +86,7 @@ const Invite = ({ className, ...rest }) => {
           enqueueSnackbar('User invited', {
             variant: 'success'
           });
+          onCancel()
         } catch (err) {
           console.error(err);
           setStatus({ success: false });
@@ -91,10 +117,46 @@ const Invite = ({ className, ...rest }) => {
                   container
                   justify='center'
                   spacing={2}
-                >
+                  >
+                    <Grid
+                      item
+                      sm={6}
+                      xs={12}
+                    >
+                      <TextField
+                        error={Boolean(touched.firstName && errors.firstName)}
+                        fullWidth
+                        helperText={touched.firstName && errors.firstName}
+                        label="First Name"
+                        name="firstName"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        type="text"
+                        value={values.firstName}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      sm={6}
+                      xs={12}
+                    >
+                      <TextField
+                        error={Boolean(touched.lastName && errors.lastName)}
+                        fullWidth
+                        helperText={touched.lastName && errors.lastName}
+                        label="Last Name"
+                        name="lastName"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        type="text"
+                        value={values.lastName}
+                        variant="outlined"
+                      />
+                    </Grid>
                   <Grid
                     item
-                    sm={10}
+                    sm={12}
                     xs={12}
                   >
                     <TextField
@@ -110,18 +172,6 @@ const Invite = ({ className, ...rest }) => {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item sm={2} xs={12}>
-                    <Button
-                      color="secondary"
-                      disabled={isSubmitting}
-                      type="submit"
-                      variant="contained"
-                    >
-                      {isSubmitting && <CircularProgress size='sm'/>}
-                      {' '}
-                      Invite User
-                    </Button>
-                  </Grid>
                 </Grid>
                 {errors.submit && (
                   <Box mt={3}>
@@ -130,11 +180,29 @@ const Invite = ({ className, ...rest }) => {
                     </FormHelperText>
                   </Box>
                 )}
-              </CardContent>
+                </CardContent>
+                <Box
+                  p={2}
+                  display="flex"
+                  justifyContent="flex-end"
+                >
+                  <Button onClick={handleOnClickCancel}>Cancel</Button>
+                  <Button
+                    color="secondary"
+                    disabled={isSubmitting}
+                    type="submit"
+                    variant="contained"
+                  >
+                    {isSubmitting && <CircularProgress size='sm' />}
+                    {' '}
+                      Invite User
+                    </Button>
+                </Box>
             </Card>
           </form>
         )}
-    </Formik>
+      </Formik>
+    </Dialog>
   );
 };
 

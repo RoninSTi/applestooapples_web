@@ -32,9 +32,8 @@ import {
 } from 'react-feather';
 import getInitials from 'src/utils/getInitials';
 import useAuth from 'src/hooks/useAuth'
-import api from 'src/utils/api'
 import { useDispatch, useSelector } from 'src/store'
-import { getAccounts } from 'src/slices/account'
+import { deleteAccountUser } from 'src/slices/account'
 
 const sortOptions = [
   {
@@ -138,7 +137,7 @@ const Results = ({
   const [isDeleting, setIsDeleting] = useState(false)
   const [sort, setSort] = useState(sortOptions[0].value);
   const { user: authUser } = useAuth()
-  const account = useSelector(state => state.account.activeAccount)
+  const account = useSelector(state => state.account.account)
   const dispatch = useDispatch()
 
   const handleQueryChange = (event) => {
@@ -174,9 +173,7 @@ const Results = ({
     setIsDeleting(true)
 
     try {
-      await api.delete(`account/${account.id}/user/${userToDelete.id}`)
-
-      dispatch(getAccounts())
+      await dispatch(deleteAccountUser({ accountId: account.id, userId: userToDelete.id }))
     } catch (error) {
       console.log({ error })
     } finally {

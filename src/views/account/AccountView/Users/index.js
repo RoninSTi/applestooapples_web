@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -19,16 +20,34 @@ const useStyles = makeStyles((theme) => ({
 const UserListView = () => {
   const classes = useStyles();
 
-  const accountUsers = useSelector(state => state.account.activeAccount?.users)
+  const [inviteIsOpen, setInviteIsOpen] = useState(false)
+
+  const accountUsers = useSelector(state => state.account.account?.users)
+
+  const handleOnCancel = () => {
+    setInviteIsOpen(false)
+  }
+
+  const handleOnClickInviteUser = () => {
+    setInviteIsOpen(!inviteIsOpen)
+  }
 
   return (
     <Card
       className={clsx(classes.root)}
     >
-      <CardHeader title="All Account Users" />
+      <CardHeader action={
+        <Button
+          color="secondary"
+          onClick={handleOnClickInviteUser}
+          variant='contained'
+        >
+          Invite User
+          </Button>
+      }title="All Account Users" />
       <Divider />
       <CardContent>
-        <Invite />
+        <Invite isOpen={inviteIsOpen} onCancel={handleOnCancel} />
         <Box mt={2} />
           <Results users={accountUsers} />
       </CardContent>

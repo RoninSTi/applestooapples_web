@@ -6,11 +6,8 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
   Dialog,
   Divider,
-  FormControlLabel,
-  FormGroup,
   FormHelperText,
   Grid,
   TextField,
@@ -42,7 +39,7 @@ const AddressesListView = () => {
 
   const dispatch = useDispatch()
 
-  const accountId = useSelector(state => state.account.activeAccount?.id)
+  const accountId = useSelector(state => state.account.account?.id)
 
   const addresses = useSelector(state => state.address.addresses) 
 

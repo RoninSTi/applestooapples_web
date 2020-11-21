@@ -62,69 +62,20 @@ const sections = [
     subheader: 'Management',
     items: [
       {
-        title: 'Customers',
-        icon: UsersIcon,
-        href: '/app/management/customers',
+        title: 'Projects',
+        icon: BriefcaseIcon,
+        href: '/app/management/projects',
         items: [
           {
-            title: 'List Customers',
-            href: '/app/management/customers'
+            title: 'List Projects',
+            href: '/app/management/projects'
           },
           {
-            title: 'View Customer',
-            href: '/app/management/customers/1'
+            title: 'Create Project',
+            href: '/app/management/projects/create'
           },
-          {
-            title: 'Edit Customer',
-            href: '/app/management/customers/1/edit'
-          }
         ]
       },
-      {
-        title: 'Products',
-        icon: ShoppingCartIcon,
-        href: '/app/management/products',
-        items: [
-          {
-            title: 'List Products',
-            href: '/app/management/products'
-          },
-          {
-            title: 'Create Product',
-            href: '/app/management/products/create'
-          }
-        ]
-      },
-      {
-        title: 'Orders',
-        icon: FolderIcon,
-        href: '/app/management/orders',
-        items: [
-          {
-            title: 'List Orders',
-            href: '/app/management/orders'
-          },
-          {
-            title: 'View Order',
-            href: '/app/management/orders/1'
-          }
-        ]
-      },
-      {
-        title: 'Invoices',
-        icon: ReceiptIcon,
-        href: '/app/management/invoices',
-        items: [
-          {
-            title: 'List Invoices',
-            href: '/app/management/invoices'
-          },
-          {
-            title: 'View Invoice',
-            href: '/app/management/invoices/1'
-          }
-        ]
-      }
     ]
   },
   {

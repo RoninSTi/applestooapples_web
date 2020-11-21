@@ -6,9 +6,9 @@ import useAuth from '../hooks/useAuth';
 const AccountGuard = ({ children }) => {
   const { user } = useAuth();
 
-  const accounts = user?.accounts
+  const account = user.account
 
-  if (accounts?.length > 0) {
+  if (account) {
     return <Redirect to="/app/account" />;
   }
 

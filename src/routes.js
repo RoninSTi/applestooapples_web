@@ -203,6 +203,16 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/management/projects',
+        component: lazy(() => import('src/views/projects/ListView'))
+      },
+      {
+        exact: true,
+        path: '/app/management/projects/create',
+        component: lazy(() => import('src/views/projects/CreateView'))
+      },
+      {
+        exact: true,
         path: '/app/projects/overview',
         component: lazy(() => import('src/views/project/OverviewView'))
       },

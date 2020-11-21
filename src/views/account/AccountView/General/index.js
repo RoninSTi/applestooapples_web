@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Grid, makeStyles } from '@material-ui/core';
 import { useDispatch } from 'src/store'
-import { getAccounts } from 'src/slices/account'
+import { getAccount } from 'src/slices/account'
 import useAuth from 'src/hooks/useAuth';
 import ProfileDetails from './ProfileDetails';
 import GeneralSettings from './GeneralSettings';
@@ -20,7 +20,7 @@ const General = ({ className, ...rest }) => {
   const { user } = useAuth();
 
   useEffect(() => {
-    dispatch(getAccounts())
+    dispatch(getAccount())
   }, [dispatch])
 
   return (

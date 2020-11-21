@@ -20,8 +20,6 @@ const SwoopLogin = ({ className, ...rest }) => {
   const { magic } = useAuth();
   const isMountedRef = useIsMountedRef();
 
-  console.log({ magic })
-
   return (
     <Formik
       initialValues={{
