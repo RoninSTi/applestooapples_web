@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -19,8 +19,15 @@ import {
   Divider,
   FormHelperText,
   Grid,
+  IconButton,
   Link,
   StepConnector,
+  SvgIcon,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
   colors,
@@ -30,7 +37,15 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 
+import {
+  Check as CheckIcon,
+  Trash as TrashIcon,
+  Search as SearchIcon,
+  X as XIcon
+} from 'react-feather';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import CollaboratorInvite from './CollaboratorInvite'
 import DraftEditor from 'src/components/DraftEditor'
 import Page from 'src/components/Page';
 
@@ -74,7 +89,28 @@ const useStyles = makeStyles((theme) => ({
 const ProjectCreateView = () => {
   const classes = useStyles();
 
+  const [collaborators, setCollaborators] = useState([])
+  const [collaboratorInviteIsOpen, setCollaboratorInviteIsOpen] = useState(false)
+
   const { enqueueSnackbar } = useSnackbar();
+
+  const handleCollaboratorInviteOnCancel = () => {
+    setCollaboratorInviteIsOpen(false)
+  }
+
+  const handleOnClickAddCollaborator = () => {
+    setCollaboratorInviteIsOpen(true)
+  }
+
+  const handleOnClickDeleteCollaborator = (event, collaborator) => {
+    event.preventDefault()
+
+    setCollaborators(collaborators.filter(collab => collab.role !== collaborator.role))
+  }
+
+  const handleOnSubmitCollaborator = collaborator => {
+    setCollaborators(prevCollaborators => [...prevCollaborators, collaborator])
+  }
 
   return (
     <Page
@@ -112,37 +148,19 @@ const ProjectCreateView = () => {
         <Formik
           enableReinitialize
           initialValues={{
-            architectName: '',
-            civilName: '',
             code: nanoid(),
-            contractorName: '',
-            designerName: '',
-            homeownerName: '',
-            geotechName: '',
-            landscapeName: '',
-            lightingName: '',
             name: '',
             size: 'md',
             scope: '',
             startDate: new Date(),
-            structuralName: '',
             type: 'new',
           }}
           validationSchema={Yup.object().shape({
-            architectName: Yup.string(),
-            civilName: Yup.string(),
             code: Yup.string(),
-            contractorName: Yup.string(),
-            designerName: Yup.string(),
-            geotechName: Yup.string(),
-            homeownerName: Yup.string(),
-            landscapeName: Yup.string(),
-            lightingName: Yup.string(),
             name: Yup.string().required(),
             scope: Yup.string(),
             size: Yup.string(),
             startDate: Yup.date(),
-            structuralName: Yup.string(),
             type: Yup.string()
           })}
           onSubmit={async (values, {
@@ -300,128 +318,85 @@ const ProjectCreateView = () => {
                 </Box>
                 <Box mb={4}>
                   <Card>
-                    <CardHeader title='Project Collaboration' />
+                    <CardHeader
+                      action={<Button color="secondary" onClick={handleOnClickAddCollaborator} disabled={collaborators.length === 9}>Add Collaborator</Button>}
+                      title='Project Collaboration' />
                     <Divider />
                     <CardContent>
-                      <Grid container spacing={4}>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.homeownerName && errors.homeownerName)}
-                            fullWidth
-                            helperText={touched.homeownerName && errors.homeownerName}
-                            label="Homeowner Name"
-                            name="homeownerName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.homeownerName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.architectName && errors.architectName)}
-                            fullWidth
-                            helperText={touched.architectName && errors.architectName}
-                            label="Architect Name"
-                            name="architectName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.architectName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.contractorName && errors.contractorName)}
-                            fullWidth
-                            helperText={touched.contractorName && errors.contractorName}
-                            label="Contractor Name"
-                            name="contractorName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.contractorName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.designerName && errors.designerName)}
-                            fullWidth
-                            helperText={touched.designerName && errors.designerName}
-                            label="Designer Name"
-                            name="designerName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.designerName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.landscapeName && errors.landscapeName)}
-                            fullWidth
-                            helperText={touched.landscapeName && errors.landscapeName}
-                            label="Landscape Designer Name"
-                            name="landscapeName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.landscapeName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.structuralName && errors.structuralName)}
-                            fullWidth
-                            helperText={touched.structuralName && errors.structuralName}
-                            label="Structural Engineer Name"
-                            name="structuralName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.structuralName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.geotechName && errors.geotechName)}
-                            fullWidth
-                            helperText={touched.geotechName && errors.geotechName}
-                            label="Geotech Name"
-                            name="geotechName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.geotechName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.civilName && errors.civilName)}
-                            fullWidth
-                            helperText={touched.civilName && errors.civilName}
-                            label="Civil Engineer Name"
-                            name="civilName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.civilName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={Boolean(touched.lightingName && errors.lightingName)}
-                            fullWidth
-                            helperText={touched.lightingName && errors.lightingName}
-                            label="Lighting Designer Name"
-                            name="lightingName"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.lightingName}
-                            variant="outlined"
-                          />
-                        </Grid>
-                      </Grid>
+                      {collaborators.length > 0 ? (
+                        <PerfectScrollbar>
+                          <Box minWidth={700}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>Role</TableCell>
+                                  <TableCell>Name</TableCell>
+                                  <TableCell>Invited</TableCell>
+                                  <TableCell align="right">Actions</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {collaborators.map((collaborator) => {
+                                  return (
+                                    <TableRow
+                                      hover
+                                      key={collaborator.role}
+                                    >
+                                      <TableCell>
+                                        <Typography
+                                          variant="body2"
+                                          color="textSecondary"
+                                        >
+                                          {collaborator.role}
+                                        </Typography>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Box
+                                          display="flex"
+                                          alignItems="center"
+                                        >
+                                          <div>
+                                            <Typography
+                                              variant="body2"
+                                              color="textSecondary"
+                                            >
+                                              {`${collaborator.lastName}, ${collaborator.firstName}`}
+                                            </Typography>
+                                            <Typography
+                                              variant="body2"
+                                              color="textSecondary"
+                                            >
+                                              {collaborator.email}
+                                            </Typography>
+                                          </div>
+                                        </Box>
+                                      </TableCell>
+                                      <TableCell>
+                                        {collaborator.invite && <CheckIcon />}
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        <IconButton
+                                          onClick={(event) => handleOnClickDeleteCollaborator(event, collaborator)}
+                                        >
+                                          <SvgIcon fontSize="small">
+                                            <TrashIcon />
+                                          </SvgIcon>
+                                        </IconButton>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </Box>
+                        </PerfectScrollbar>) : (
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                          >
+                            No collaborators added.
+                          </Typography>
+                        )}
                     </CardContent>
                   </Card>
                 </Box>
@@ -480,6 +455,12 @@ const ProjectCreateView = () => {
           )}}
           </Formik>
       </Container>
+      <CollaboratorInvite
+        collaborators={collaborators}
+        isOpen={collaboratorInviteIsOpen}
+        onCancel={handleCollaboratorInviteOnCancel}
+        onSubmit={handleOnSubmitCollaborator}
+      />
     </Page>
   );
 };
