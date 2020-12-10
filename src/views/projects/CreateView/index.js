@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { useDispatch } from 'src/store/index'
 
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { nanoid } from 'nanoid'
 import { useSnackbar } from 'notistack';
+import { customAlphabet } from 'nanoid';
+
+import { createProject } from 'src/slices/projects'
 
 import {
   Box,
@@ -21,7 +24,6 @@ import {
   Grid,
   IconButton,
   Link,
-  StepConnector,
   SvgIcon,
   Table,
   TableBody,
@@ -30,9 +32,7 @@ import {
   TableRow,
   TextField,
   Typography,
-  colors,
   makeStyles,
-  withStyles
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { KeyboardDatePicker } from '@material-ui/pickers';
@@ -40,24 +40,17 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import {
   Check as CheckIcon,
   Trash as TrashIcon,
-  Search as SearchIcon,
-  X as XIcon
 } from 'react-feather';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import Address from './Address'
 import CollaboratorInvite from './CollaboratorInvite'
 import DraftEditor from 'src/components/DraftEditor'
 import Page from 'src/components/Page';
 
-const PROJECT_TYPES = [
-  {
-    label: 'New',
-    value: 'new'
-  }, {
-    label: 'Remodel',
-    value: 'remodel'
-  }
-];
+import { ADDRESS_TYPES, PROJECT_TYPES } from 'src/utils/enums'
+
+const nanoid = customAlphabet('1234567890abcdef', 6)
 
 const PROJECT_SIZES = [
   {
@@ -76,7 +69,6 @@ const PROJECT_SIZES = [
   }
 ];
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -89,23 +81,48 @@ const useStyles = makeStyles((theme) => ({
 const ProjectCreateView = () => {
   const classes = useStyles();
 
+  const history = useHistory()
+
+  const [addresses, setAddresses] = useState([])
+  const [addressIsOpen, setAddressIsOpen] = useState(false)
+
   const [collaborators, setCollaborators] = useState([])
   const [collaboratorInviteIsOpen, setCollaboratorInviteIsOpen] = useState(false)
 
+  const dispatch = useDispatch()
+
   const { enqueueSnackbar } = useSnackbar();
+
+  const handleAddressCancel = () => {
+    setAddressIsOpen(false)
+  }
 
   const handleCollaboratorInviteOnCancel = () => {
     setCollaboratorInviteIsOpen(false)
+  }
+
+  const handleOnClickAddAddress = () => {
+    setAddressIsOpen(true)
   }
 
   const handleOnClickAddCollaborator = () => {
     setCollaboratorInviteIsOpen(true)
   }
 
+  const handleOnClickDeleteAddress = (event, address) => {
+    event.preventDefault()
+
+    setAddresses(addresses.filter(add => add.type !== address.type))
+  }
+
   const handleOnClickDeleteCollaborator = (event, collaborator) => {
     event.preventDefault()
 
     setCollaborators(collaborators.filter(collab => collab.role !== collaborator.role))
+  }
+
+  const handleOnSubmitAddress = address => {
+    setAddresses(prevAddresses => [...prevAddresses, address])
   }
 
   const handleOnSubmitCollaborator = collaborator => {
@@ -146,9 +163,8 @@ const ProjectCreateView = () => {
           </Typography>
         </Box>
         <Formik
-          enableReinitialize
           initialValues={{
-            code: nanoid(),
+            code: `N-${nanoid()}`,
             name: '',
             size: 'md',
             scope: '',
@@ -171,6 +187,14 @@ const ProjectCreateView = () => {
           }) => {
             try {
               setSubmitting(true);
+              await dispatch(createProject({
+                data: {
+                  ...values,
+                  addresses,
+                  collaborators
+                },
+                history
+              }))
               resetForm();
               setStatus({ success: true });
               setSubmitting(false);
@@ -202,6 +226,22 @@ const ProjectCreateView = () => {
 
             const handleOnContentStateChange = contentState => {
               setFieldValue('scope', JSON.stringify(contentState))
+            }
+
+            const handleTypeChange = e => {
+              const { value } = e.target
+
+              if (value !== values.type) {
+                setFieldValue('type', value)
+
+                let code = `N-${nanoid()}`
+
+                if (value === 'remodel') {
+                  code = `R-${nanoid()}`
+                }
+
+                setFieldValue('code', code)
+              }
             }
 
             return (
@@ -257,7 +297,7 @@ const ProjectCreateView = () => {
                           label="Type"
                           name="type"
                           onBlur={handleBlur}
-                          onChange={handleChange}
+                          onChange={handleTypeChange}
                           select
                           SelectProps={{ native: true }}
                           value={values.type}
@@ -402,15 +442,85 @@ const ProjectCreateView = () => {
                 </Box>
                 <Box mb={4}>
                   <Card>
-                    <CardHeader title='Project Addresses' />
+                    <CardHeader
+                      action={<Button color="secondary" onClick={handleOnClickAddAddress}>Add Address</Button>}
+                      title='Project Addresses'
+                    />
                     <Divider />
                     <CardContent>
-                      <Typography
-                        variant="h4"
-                        color="textPrimary"
-                      >
-                        Need Address UX discussion
-                      </Typography>
+                      {addresses.length > 0 ? (
+                        <PerfectScrollbar>
+                          <Box minWidth={700}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>Type</TableCell>
+                                  <TableCell>Address</TableCell>
+                                  <TableCell align="right">Actions</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {addresses.map((address) => {
+                                  return (
+                                    <TableRow
+                                      hover
+                                      key={address.type}
+                                    >
+                                      <TableCell>
+                                        <Typography
+                                          variant="body2"
+                                          color="textSecondary"
+                                        >
+                                          {ADDRESS_TYPES.find(({ value }) => value === address.type).label}
+                                        </Typography>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Box
+                                          alignItems="flex-start"
+                                          display="flex"
+                                          flexDirection="column"
+                                        >
+                                            <Typography
+                                              variant="h6"
+                                            >
+                                              {address.name}
+                                            </Typography>
+                                            <Typography
+                                              variant="h5"
+                                            >
+                                              {address.companyName}
+                                            </Typography>
+                                            <Typography
+                                              variant="body2"
+                                              color="textSecondary"
+                                            >
+                                              {`${address.address}${address.address2 ? ` ${address.address2}` : ''}, ${address.city}, ${address.state} ${address.postalCode}`}
+                                            </Typography>
+                                        </Box>
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        <IconButton
+                                          onClick={(event) => handleOnClickDeleteAddress(event, address)}
+                                        >
+                                          <SvgIcon fontSize="small">
+                                            <TrashIcon />
+                                          </SvgIcon>
+                                        </IconButton>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </Box>
+                        </PerfectScrollbar>) : (
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                          >
+                            No addresses added.
+                          </Typography>
+                        )}
                     </CardContent>
                   </Card>
                 </Box>
@@ -461,8 +571,14 @@ const ProjectCreateView = () => {
         onCancel={handleCollaboratorInviteOnCancel}
         onSubmit={handleOnSubmitCollaborator}
       />
+      <Address
+        projectAddresses={addresses}
+        isOpen={addressIsOpen}
+        onCancel={handleAddressCancel}
+        onSubmit={handleOnSubmitAddress}
+      />
     </Page>
   );
 };
 
-export default ProjectCreateView;
+export default ProjectCreateView

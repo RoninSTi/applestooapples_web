@@ -34,8 +34,8 @@ const slice = createSlice({
 
 export const reducer = slice.reducer;
 
-export const getAddresses = (accountId) => async (dispatch) => {
-  const response = await api.get(`account/${accountId}/addresses`);
+export const getAddresses = () => async (dispatch) => {
+  const response = await api.get(`/addresses`);
 
   dispatch(slice.actions.getAddresses({ addresses: response.data }));
 };

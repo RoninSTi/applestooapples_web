@@ -125,7 +125,7 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Invite User" />
+                <CardHeader title="Add Collaborator" />
                 <Divider />
                 <CardContent>
                   <Grid

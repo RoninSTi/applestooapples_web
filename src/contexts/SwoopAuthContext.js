@@ -12,6 +12,7 @@ import api from 'src/utils/api';
 
 
 const initialAuthState = {
+  isAttempting: false,
   isAuthenticated: false,
   isInitialised: false,
   user: null
@@ -40,6 +41,12 @@ const setSession = (accessToken) => {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'ATTEMPT_LOGIN': {
+      return {
+        ...state,
+        isAttempting: true
+      }
+    }
     case 'INITIALISE': {
       const { isAuthenticated, user } = action.payload;
 
@@ -55,6 +62,7 @@ const reducer = (state, action) => {
 
       return {
         ...state,
+        isAttempting: false,
         isAuthenticated: true,
         user
       };
@@ -113,6 +121,10 @@ export const AuthProvider = ({ children }) => {
   }
 
   const login = useCallback(async (code, state) => {
+    dispatch({
+      type: 'ATTEMPT_LOGIN',
+    });
+
     const response = await api.get('/auth/swoop/callback', {
       params: {
         code,
@@ -133,7 +145,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const { code, state: authState } = params
 
-    if (code && authState && !state.isAuthenticated) {
+    if (code && authState && !state.isAuthenticated  && !state.isAttempting) {
       login(code, authState)
     }
   }, [login, params, state])
