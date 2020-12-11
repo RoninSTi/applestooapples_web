@@ -76,6 +76,7 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
           email: '',
           firstName: '',
           invite: false,
+          invitationStatus: 'invite',
           lastName: '',
           role: availableCollaborators[0]?.value
         }}

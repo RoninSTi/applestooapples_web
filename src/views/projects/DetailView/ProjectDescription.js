@@ -8,17 +8,15 @@ import { Formik } from 'formik';
 import { useSnackbar } from 'notistack';
 import { customAlphabet } from 'nanoid';
 
-import { createProject } from 'src/slices/projects'
+import { updateProject } from 'src/slices/projects'
 
 import {
   Box,
   Button,
   Card,
   CardContent,
-  CardHeader,
   CircularProgress,
   Container,
-  Divider,
   FormHelperText,
   Grid,
   TextField,
@@ -61,55 +59,11 @@ const useStyles = makeStyles((theme) => ({
 const Description = ({ project }) => {  
   const classes = useStyles();
 
-  const history = useHistory()
-
-  const [addresses, setAddresses] = useState([])
-  const [addressIsOpen, setAddressIsOpen] = useState(false)
-
-  const [collaborators, setCollaborators] = useState([])
-  const [collaboratorInviteIsOpen, setCollaboratorInviteIsOpen] = useState(false)
-
   const dispatch = useDispatch()
 
   const { enqueueSnackbar } = useSnackbar();
 
   if (!project) return null;
-
-  const handleAddressCancel = () => {
-    setAddressIsOpen(false)
-  }
-
-  const handleCollaboratorInviteOnCancel = () => {
-    setCollaboratorInviteIsOpen(false)
-  }
-
-  const handleOnClickAddAddress = () => {
-    setAddressIsOpen(true)
-  }
-
-  const handleOnClickAddCollaborator = () => {
-    setCollaboratorInviteIsOpen(true)
-  }
-
-  const handleOnClickDeleteAddress = (event, address) => {
-    event.preventDefault()
-
-    setAddresses(addresses.filter(add => add.type !== address.type))
-  }
-
-  const handleOnClickDeleteCollaborator = (event, collaborator) => {
-    event.preventDefault()
-
-    setCollaborators(collaborators.filter(collab => collab.role !== collaborator.role))
-  }
-
-  const handleOnSubmitAddress = address => {
-    setAddresses(prevAddresses => [...prevAddresses, address])
-  }
-
-  const handleOnSubmitCollaborator = collaborator => {
-    setCollaborators(prevCollaborators => [...prevCollaborators, collaborator])
-  }
 
   return (
     <Page
@@ -141,18 +95,21 @@ const Description = ({ project }) => {
           }) => {
             try {
               setSubmitting(true);
-              await dispatch(createProject({
+
+              await dispatch(updateProject({
                 data: {
                   ...values,
-                  addresses,
-                  collaborators
                 },
-                history
-              }))
+                projectId: project.id
+              }));
+
               resetForm();
+
               setStatus({ success: true });
+
               setSubmitting(false);
-              enqueueSnackbar('Project created', {
+
+              enqueueSnackbar('Project updated', {
                 variant: 'success'
               });
             } catch (err) {
@@ -174,14 +131,6 @@ const Description = ({ project }) => {
             touched,
             values
           }) => {
-            const handleOnClickCancel = () => {
-              resetForm()
-            }
-
-            const handleOnContentStateChange = contentState => {
-              setFieldValue('scope', JSON.stringify(contentState))
-            }
-
             const handleTypeChange = e => {
               const { value } = e.target
 
@@ -199,7 +148,6 @@ const Description = ({ project }) => {
             }
 
             return (
-
               <form onSubmit={handleSubmit}>
                 <Box mb={4}>
                   <Card>
@@ -315,10 +263,8 @@ const Description = ({ project }) => {
                   </Box>
                 )}
                 <Box
-                  p={2}
                   display="flex"
                   justifyContent="flex-end"
-                  mt={4}
                 >
                   <Button
                     color="secondary"
@@ -326,8 +272,7 @@ const Description = ({ project }) => {
                     type="submit"
                     variant="contained"
                   >
-                    {isSubmitting ? <CircularProgress size='sm' /> :
-                      'Update'}
+                    {isSubmitting ? <CircularProgress color='common.white' size={20} /> : 'Update'}
                   </Button>
                 </Box>
               </form>

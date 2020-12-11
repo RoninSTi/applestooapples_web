@@ -51,9 +51,16 @@ const slice = createSlice({
       state.isLoading = isLoading;
     },
     updateProject(state, action) {
-      const { projects } = action.payload
+      const { project } = action.payload;
 
-      state.projects = projects
+      state.projectDetail = project;
+
+      const filteredProjects = state.projects.filter(({ id }) => id !== project.id);
+
+      state.projects = [
+        ...filteredProjects,
+        project
+      ];
     }
   }
 });
@@ -130,7 +137,7 @@ export const updateProject = ({ projectId, data }) => async (dispatch) => {
     data
   })
 
-  dispatch(slice.actions.updateProject({ projects: response.data }))
+  dispatch(slice.actions.updateProject({ project: response.data }))
 }
 
 export default slice;
