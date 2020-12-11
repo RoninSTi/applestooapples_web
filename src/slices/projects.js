@@ -2,13 +2,23 @@ import { createSlice } from '@reduxjs/toolkit';
 import api from 'src/utils/api';
 
 const initialState = {
+  isLoading: false,
   projects: [],
+  projectDetail: null
 };
 
 const slice = createSlice({
   name: 'projects',
   initialState,
   reducers: {
+    clearDetail(state) {
+      state.projectDetail = null
+    },
+    getProject(state, action) {
+      const { project } = action.payload;
+
+      state.projectDetail = project;
+    },
     getProjects(state, action) {
       const { projects } = action.payload;
 
@@ -35,6 +45,11 @@ const slice = createSlice({
 
       state.projects = state.projects.filter(({ id }) => id !== projectId)
     },
+    setLoading(state, action) {
+      const { isLoading } = action.payload;
+
+      state.isLoading = isLoading;
+    },
     updateProject(state, action) {
       const { projects } = action.payload
 
@@ -44,6 +59,29 @@ const slice = createSlice({
 });
 
 export const reducer = slice.reducer;
+
+export const clearDetail = () => async (dispatch) => {
+  dispatch(slice.actions.clearDetail())
+}
+
+export const getProject = ({ projectId }) => async (dispatch) => {
+  dispatch(slice.actions.setLoading({ isLoading: true }));
+
+  try {
+    const response = await api({
+      method: 'get',
+      url: `project/${projectId}`
+    });
+
+    const project = response.data
+
+    dispatch(slice.actions.getProject({ project }))
+  } catch (err) {
+    console.log(err)
+  } finally {
+    dispatch(slice.actions.setLoading({ isLoading: false }));
+  }
+}
 
 export const getProjects = () => async (dispatch) => {
   const response = await api.get(`/projects`);
@@ -77,7 +115,7 @@ export const createProject = ({ data, history }) => async (dispatch) => {
 };
 
 export const deleteProject = ({ projectId }) => async dispatch => {
-  const response = await api({
+  await api({
     method: 'delete',
     url: `project/${projectId}`
   })
