@@ -14,6 +14,14 @@ const slice = createSlice({
 
       state.projects = projects;
     },
+    copyProject(state, action) {
+      const { project } = action.payload;
+
+      state.projects = [
+        ...state.projects,
+        project
+      ];
+    },
     createProject(state, action) {
       const { project } = action.payload;
 
@@ -23,9 +31,9 @@ const slice = createSlice({
       ];
     },
     deleteProject(state, action) {
-      const { projects } = action.payload;
+      const { projectId } = action.payload;
 
-      state.projects = projects;
+      state.projects = state.projects.filter(({ id }) => id !== projectId)
     },
     updateProject(state, action) {
       const { projects } = action.payload
@@ -42,6 +50,17 @@ export const getProjects = () => async (dispatch) => {
 
   dispatch(slice.actions.getProjects({ projects: response.data }));
 };
+
+export const copyProject = ({ projectId }) => async (dispatch) => {
+  const response = await api({
+    method: 'post',
+    url: `project/copy/${projectId}`,
+  });
+
+  const project = response.data
+
+  dispatch(slice.actions.copyProject({ project }))
+}
 
 export const createProject = ({ data, history }) => async (dispatch) => {
   const response = await api({
@@ -63,7 +82,7 @@ export const deleteProject = ({ projectId }) => async dispatch => {
     url: `project/${projectId}`
   })
 
-  dispatch(slice.actions.deleteProject({ projects: response.data }))
+  dispatch(slice.actions.deleteProject({ projectId }))
 }
 
 export const updateProject = ({ projectId, data }) => async (dispatch) => {

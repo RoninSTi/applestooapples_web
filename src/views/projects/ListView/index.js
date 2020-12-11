@@ -31,12 +31,13 @@ import {
 } from '@material-ui/core';
 
 import { useDispatch, useSelector } from 'src/store'
-import { getProjects } from 'src/slices/projects'
+import { copyProject, deleteProject, getProjects } from 'src/slices/projects'
 import {
   Check as CheckIcon,
   Trash as TrashIcon,
   Search as SearchIcon,
-  X as XIcon
+  X as XIcon,
+  Zap as ZapIcon
 } from 'react-feather';
 
 import { PROJECT_TYPES } from 'src/utils/enums'
@@ -152,7 +153,11 @@ const ListView = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const [projectToCopy, setProjectToCopy] = useState(null);
+
   const [projectToDelete, setProjectToDelete] = useState(null);
+
+  const [isCopying, setIsCopying] = useState(false);
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -177,8 +182,18 @@ const ListView = () => {
   };
 
   const handleOnClickDelete = (event, ptd) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
     setProjectToDelete(ptd)
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  }
+
+  const handleOnClickCopy = (event, ptc) => {
+    setProjectToCopy(ptc)
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  }
+
+  const handleOnClickCancelCopy = () => {
+    setAnchorEl(null)
+    setProjectToCopy(null)
   }
 
   const handleOnClickCancelDelete = () => {
@@ -191,12 +206,26 @@ const ListView = () => {
     setIsDeleting(true)
 
     try {
-      // await dispatch(deleteAccountUser({ accountId: account.id, userId: userToDelete.id }))
+      await dispatch(deleteProject({ projectId: projectToDelete.id }))
     } catch (error) {
       console.log({ error })
     } finally {
       setProjectToDelete(null)
       setIsDeleting(false)
+    }
+  }
+
+  const handleOnClickConfirmCopy = async () => {
+    setAnchorEl(null)
+    setIsCopying(true)
+
+    try {
+      await dispatch(copyProject({ projectId: projectToCopy.id }))
+    } catch (error) {
+      console.log({ error })
+    } finally {
+      setProjectToCopy(null)
+      setIsCopying(false)
     }
   }
 
@@ -358,17 +387,26 @@ const ListView = () => {
                         <TableCell>
                           {project.code}
                         </TableCell>
-                        <TableCell align="right">
-                          {isDeleting && projectToDelete?.id === project.id ? <CircularProgress size='sm' /> : (
-                            <IconButton
-                              disabled={isDeleting}
-                              onClick={(event) => handleOnClickDelete(event, project)}
-                            >
-                              <SvgIcon fontSize="small">
-                                <TrashIcon />
-                              </SvgIcon>
-                            </IconButton>
-                          )}
+                        <TableCell align="right" >
+                          <Box display='flex' justifyContent='flex-end'>
+                            {isDeleting && projectToDelete?.id === project.id ? <CircularProgress size='sm' /> : (
+                              <IconButton
+                                disabled={isDeleting}
+                                onClick={(event) => handleOnClickDelete(event, project)}
+                              >
+                                <SvgIcon fontSize="small">
+                                  <TrashIcon />
+                                </SvgIcon>
+                              </IconButton>
+                            )}
+                            {isCopying && projectToCopy?.id === project.id ? <CircularProgress size='sm' /> : (
+                              <IconButton onClick={event => handleOnClickCopy(event, project)}>
+                                <SvgIcon fontSize='small'>
+                                  <ZapIcon />
+                                </SvgIcon>
+                              </IconButton>
+                            )}
+                          </Box>
                         </TableCell>
                       </TableRow>
                     );
@@ -387,21 +425,39 @@ const ListView = () => {
               rowsPerPageOptions={[5, 10, 25]}
             />
             <Popper open={popperIsOpen} anchorEl={anchorEl}>
-              <Paper className={classes.popper} elevation={1}>
-                <Typography>Delete selected project?</Typography>
-                <div style={{ float: 'right' }}>
-                  <IconButton onClick={handleOnClickCancelDelete}>
-                    <SvgIcon style={{ color: 'red ' }} fontSize="small">
-                      <XIcon />
-                    </SvgIcon>
-                  </IconButton>
-                  <IconButton onClick={handleOnClickConfirmDelete}>
-                    <SvgIcon style={{ color: 'green' }} fontSize="small">
-                      <CheckIcon />
-                    </SvgIcon>
-                  </IconButton>
-                </div>
-              </Paper>
+              {!!projectToDelete &&
+                <Paper className={classes.popper} elevation={1}>
+                  <Typography>Delete selected project?</Typography>
+                  <div style={{ float: 'right' }}>
+                    <IconButton onClick={handleOnClickCancelDelete}>
+                      <SvgIcon style={{ color: 'red ' }} fontSize="small">
+                        <XIcon />
+                      </SvgIcon>
+                    </IconButton>
+                    <IconButton onClick={handleOnClickConfirmDelete}>
+                      <SvgIcon style={{ color: 'green' }} fontSize="small">
+                        <CheckIcon />
+                      </SvgIcon>
+                    </IconButton>
+                  </div>
+                </Paper>
+              }
+              {!!projectToCopy &&
+                <Paper className={classes.popper} elevation={1}>
+                  <Typography>Copy selected project?</Typography>
+                  <div style={{ float: 'right' }}>
+                    <IconButton onClick={handleOnClickCancelCopy}>
+                      <SvgIcon style={{ color: 'red ' }} fontSize="small">
+                        <XIcon />
+                      </SvgIcon>
+                    </IconButton>
+                    <IconButton onClick={handleOnClickConfirmCopy}>
+                      <SvgIcon style={{ color: 'green' }} fontSize="small">
+                        <CheckIcon />
+                      </SvgIcon>
+                    </IconButton>
+                  </div>
+                </Paper>}
             </Popper>
           </CardContent>
         </Card>
