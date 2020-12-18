@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'src/store'
 import { clearDetail, getProject } from 'src/slices/projects';
 
+import Addresses from './Addresses';
 import Collaborators from './Collaborators';
 import Header from './Header'
 import ProjectDescription from './ProjectDescription'
@@ -50,7 +51,8 @@ const ListView = () => {
 
   const tabs = [
     { value: 'description', label: 'Description' },
-    { value: 'collaborators', label: 'Collaborators' }
+    { value: 'collaborators', label: 'Collaborators' },
+    { value: 'addresses', label: 'Addresses'}
   ];
 
   const handleTabsChange = (_, value) => {
@@ -83,6 +85,7 @@ const ListView = () => {
         </Box>
         <Divider />
         <Box mt={3}>
+          {currentTab === 'addresses' && <Addresses project={project} />}
           {currentTab === 'collaborators' && <Collaborators project={project} />}
           {currentTab === 'description' && <ProjectDescription project={project} />}
         </Box>

@@ -56,8 +56,6 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
 
   const classes = useStyles()
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const availableAddresses = ADDRESS_TYPES.filter(({ value }) => !projectAddresses.some(({ type }) => type === value))
 
   const handleOnClickCancel = () => {
@@ -106,12 +104,8 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
             onSubmit({...values })
             setStatus({ success: true });
             setSubmitting(false);
-            enqueueSnackbar('Address added', {
-              variant: 'success'
-            });
             onCancel()
           } catch (err) {
-            console.error(err);
             setStatus({ success: false });
             setErrors({ submit: err.message });
             setSubmitting(false);

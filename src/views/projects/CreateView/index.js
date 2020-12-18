@@ -122,6 +122,10 @@ const ProjectCreateView = () => {
 
   const handleOnSubmitAddress = address => {
     setAddresses(prevAddresses => [...prevAddresses, address])
+
+    enqueueSnackbar('Address added', {
+      variant: 'success'
+    });
   }
 
   const handleOnSubmitCollaborator = collaborator => {
