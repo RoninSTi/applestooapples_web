@@ -130,6 +130,18 @@ export const deleteProject = ({ projectId }) => async dispatch => {
   dispatch(slice.actions.deleteProject({ projectId }))
 }
 
+export const resendProjectInvite = ({ collaboratorId, projectId }) => async (dispatch) => {
+  const response = await api({
+    method: 'post',
+    url: `/project/${projectId}/resend`,
+    data: {
+      collaboratorId,
+    }
+  });
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
 export const updateProject = ({ projectId, data }) => async (dispatch) => {
   const response = await api({
     method: 'put',

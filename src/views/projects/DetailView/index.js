@@ -12,10 +12,11 @@ import Page from 'src/components/Page';
 import { useParams } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'src/store'
-
-import ProjectDescription from './ProjectDescription'
-import Header from './Header'
 import { clearDetail, getProject } from 'src/slices/projects';
+
+import Collaborators from './Collaborators';
+import Header from './Header'
+import ProjectDescription from './ProjectDescription'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +35,9 @@ const ListView = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (projectId) dispatch(getProject({ projectId }))
+    if (projectId) {
+      dispatch(getProject({ projectId }))
+    }
 
     return () => {
       dispatch(clearDetail())
@@ -47,6 +50,7 @@ const ListView = () => {
 
   const tabs = [
     { value: 'description', label: 'Description' },
+    { value: 'collaborators', label: 'Collaborators' }
   ];
 
   const handleTabsChange = (_, value) => {
@@ -79,6 +83,7 @@ const ListView = () => {
         </Box>
         <Divider />
         <Box mt={3}>
+          {currentTab === 'collaborators' && <Collaborators project={project} />}
           {currentTab === 'description' && <ProjectDescription project={project} />}
         </Box>
       </Container>

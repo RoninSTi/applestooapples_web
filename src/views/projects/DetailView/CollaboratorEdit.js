@@ -11,14 +11,12 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
   CircularProgress,
   Dialog,
   Divider,
   FormHelperText,
   Grid,
   TextField,
-  Typography,
   makeStyles
 } from '@material-ui/core';
 
@@ -28,31 +26,32 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubmit, ...rest }) => {
+const CollaboratorEdit = ({ className, collaborator, collaborators, isOpen, onCancel, onSubmit, ...rest }) => {
   const classes = useStyles();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleOnClickCancel = () => {
     onCancel()
   }
 
-  const availableCollaborators = COLLABORATOR_ROLES.filter(({ value }) => !collaborators.some(({ role }) => role === value))
-
   return (
     <Dialog open={isOpen}>
       <Formik
+        enableReinitialize
         initialValues={{
-          email: '',
-          firstName: '',
-          invite: false,
-          lastName: '',
-          role: availableCollaborators[0]?.value
+          email: collaborator?.email,
+          firstName: collaborator?.firstName,
+          id: collaborator?.id,
+          invitationStatus: collaborator?.invitationStatus,
+          lastName: collaborator?.lastName,
+          role: collaborator?.role,
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string()
             .email('Must be a valid email')
             .max(255),
           firstName: Yup.string().required(),
-          invite: Yup.boolean(),
           lastName: Yup.string().required(),
           role: Yup.string()
         })}
@@ -60,20 +59,22 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
           resetForm,
           setErrors,
           setStatus,
+          setSubmitting
         }) => {
           try {
             resetForm();
-            onSubmit({
-              ...values,
-              invitationStatus: values.invite ? 'draft' : 'unasked'
-            })
+            onSubmit({...values })
             setStatus({ success: true });
-
+            setSubmitting(false);
+            enqueueSnackbar('Collaborator updated', {
+              variant: 'success'
+            });
             onCancel()
           } catch (err) {
             console.error(err);
             setStatus({ success: false });
             setErrors({ submit: err.message });
+            setSubmitting(false);
           }
         }}
       >
@@ -114,7 +115,7 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
                         value={values.role}
                         variant="outlined"
                       >
-                        {availableCollaborators.map(({ label, value }) => (
+                        {COLLABORATOR_ROLES.map(({ label, value }) => (
                           <option
                             key={value}
                             value={value}
@@ -178,26 +179,6 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
                         variant="outlined"
                       />
                     </Grid>
-                    <Grid item sm={12} md={12}>
-                      <Box
-                        alignItems="center"
-                        display="flex"
-                        mt={2}
-                        ml={-1}
-                      >
-                      <Checkbox
-                        checked={values.invite}
-                        name="invite"
-                        onChange={handleChange}
-                      />
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                      >
-                          Invite to ApplesTooApples as a collaborator
-                      </Typography>
-                        </Box>
-                    </Grid>
                   </Grid>
                   {errors.submit && (
                     <Box mt={3}>
@@ -221,7 +202,7 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
                   >
                     {isSubmitting && <CircularProgress size='sm' />}
                     {' '}
-                      Add Collaborator
+                      Update Collaborator
                     </Button>
                 </Box>
               </Card>
@@ -232,8 +213,8 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
   );
 };
 
-CollaboratorInvite.propTypes = {
+CollaboratorEdit.propTypes = {
   className: PropTypes.string
 };
 
-export default CollaboratorInvite;
+export default CollaboratorEdit;

@@ -38,7 +38,6 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import {
-  Check as CheckIcon,
   Trash as TrashIcon,
 } from 'react-feather';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -48,7 +47,7 @@ import CollaboratorInvite from './CollaboratorInvite'
 import DraftEditor from 'src/components/DraftEditor'
 import Page from 'src/components/Page';
 
-import { ADDRESS_TYPES, PROJECT_TYPES } from 'src/utils/enums'
+import { ADDRESS_TYPES, COLLABORATOR_ROLES, INVITATION_STATUS, PROJECT_TYPES } from 'src/utils/enums'
 
 const nanoid = customAlphabet('1234567890abcdef', 6)
 
@@ -127,6 +126,10 @@ const ProjectCreateView = () => {
 
   const handleOnSubmitCollaborator = collaborator => {
     setCollaborators(prevCollaborators => [...prevCollaborators, collaborator])
+
+    enqueueSnackbar('Collaborator added', {
+      variant: 'success'
+    });
   }
 
   return (
@@ -371,7 +374,7 @@ const ProjectCreateView = () => {
                                 <TableRow>
                                   <TableCell>Role</TableCell>
                                   <TableCell>Name</TableCell>
-                                  <TableCell>Invited</TableCell>
+                                  <TableCell>Invitation status</TableCell>
                                   <TableCell align="right">Actions</TableCell>
                                 </TableRow>
                               </TableHead>
@@ -387,7 +390,7 @@ const ProjectCreateView = () => {
                                           variant="body2"
                                           color="textSecondary"
                                         >
-                                          {collaborator.role}
+                                          {COLLABORATOR_ROLES.find(({ value }) => value === collaborator.role).label}
                                         </Typography>
                                       </TableCell>
                                       <TableCell>
@@ -412,7 +415,7 @@ const ProjectCreateView = () => {
                                         </Box>
                                       </TableCell>
                                       <TableCell>
-                                        {collaborator.invite && <CheckIcon />}
+                                        {INVITATION_STATUS.find(({ value }) => value === collaborator.invitationStatus).label}
                                       </TableCell>
                                       <TableCell align="right">
                                         <IconButton
@@ -550,15 +553,13 @@ const ProjectCreateView = () => {
                   justifyContent="flex-end"
                   mt={4}
                 >
-                  <Button onClick={handleOnClickCancel}>Cancel</Button>
+                  <Button onClick={handleOnClickCancel}>Reset</Button>
                   <Button
                     color="secondary"
-                    disabled={isSubmitting}
                     type="submit"
                     variant="contained"
                   >
-                    {isSubmitting ? <CircularProgress size='sm' /> :
-                      'Create'}
+                    {isSubmitting ? <CircularProgress color='common.white' size={20} /> : 'Create'}
                   </Button>
                 </Box>
             </form>
