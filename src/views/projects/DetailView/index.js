@@ -12,12 +12,15 @@ import Page from 'src/components/Page';
 import { useParams } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'src/store'
-import { clearDetail, getProject } from 'src/slices/projects';
+import { clearDetail, getProject, updateProject } from 'src/slices/projects';
+
+import { useSnackbar } from 'notistack';
 
 import Addresses from './Addresses';
 import Collaborators from './Collaborators';
 import Header from './Header'
 import ProjectDescription from './ProjectDescription'
+import Scope from './Scope'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +38,8 @@ const ListView = () => {
 
   const dispatch = useDispatch()
 
+  const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (projectId) {
       dispatch(getProject({ projectId }))
@@ -49,15 +54,38 @@ const ListView = () => {
 
   const [currentTab, setCurrentTab] = useState('description');
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const tabs = [
     { value: 'description', label: 'Description' },
     { value: 'collaborators', label: 'Collaborators' },
-    { value: 'addresses', label: 'Addresses'}
+    { value: 'addresses', label: 'Addresses' },
+    { value: 'scope', label: 'Scope'}
   ];
 
   const handleTabsChange = (_, value) => {
     setCurrentTab(value);
   };
+
+  const handleOnUpdate = async ({ data, successMessage }) => {
+    setIsSubmitting(true)
+    try {
+      await dispatch(updateProject({
+        data,
+        projectId: project.id
+      }));
+
+      enqueueSnackbar(successMessage, {
+        variant: 'success'
+      });
+    } catch (err) {
+      enqueueSnackbar(err.message, {
+        variant: 'error'
+      });
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <Page
@@ -88,6 +116,7 @@ const ListView = () => {
           {currentTab === 'addresses' && <Addresses project={project} />}
           {currentTab === 'collaborators' && <Collaborators project={project} />}
           {currentTab === 'description' && <ProjectDescription project={project} />}
+          {currentTab === 'scope' && <Scope isSubmitting={isSubmitting} project={project} onUpdate={handleOnUpdate} />}
         </Box>
       </Container>
     </Page>

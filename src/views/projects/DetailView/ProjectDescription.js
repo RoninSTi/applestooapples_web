@@ -149,7 +149,7 @@ const Description = ({ project }) => {
 
             return (
               <form onSubmit={handleSubmit}>
-                <Box mb={4}>
+                <Box mb={2}>
                   <Card>
                     <CardContent>
                       <Grid container spacing={4}>
