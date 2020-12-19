@@ -71,6 +71,29 @@ export const clearDetail = () => async (dispatch) => {
   dispatch(slice.actions.clearDetail())
 }
 
+export const createProjectDocument = ({ projectId, ...data }) => async (dispatch) => {
+  const response = await api({
+    method: 'post',
+    url: `project/${projectId}/document`,
+    data
+  });
+
+  const project = response.data
+
+  dispatch(slice.actions.updateProject({ project }))
+}
+
+export const deleteProjectDocument = ({ documentId, projectId }) => async (dispatch) => {
+  const response = await api({
+    method: 'delete',
+    url: `project/${projectId}/document/${documentId}`,
+  });
+
+  const project = response.data
+
+  dispatch(slice.actions.updateProject({ project }))
+}
+
 export const getProject = ({ projectId }) => async (dispatch) => {
   dispatch(slice.actions.setLoading({ isLoading: true }));
 

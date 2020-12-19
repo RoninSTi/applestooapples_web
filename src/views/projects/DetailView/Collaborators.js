@@ -159,7 +159,7 @@ const Collaborators = ({ project }) => {
   return (
     <Page
       className={classes.root}
-      title="Project Create"
+      title="Project collaborators"
     >
       <Container maxWidth="lg">
         <Box mb={4}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Container,
@@ -7,17 +7,18 @@ import {
   Tabs,
   makeStyles
 } from '@material-ui/core';
-import Page from 'src/components/Page';
+import Page from 'src/components/Page'
 
 import { useParams } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'src/store'
-import { clearDetail, getProject, updateProject } from 'src/slices/projects';
+import { clearDetail, getProject, updateProject } from 'src/slices/projects'
 
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack'
 
-import Addresses from './Addresses';
-import Collaborators from './Collaborators';
+import Addresses from './Addresses'
+import Collaborators from './Collaborators'
+import Documents from './Documents'
 import Header from './Header'
 import ProjectDescription from './ProjectDescription'
 import Scope from './Scope'
@@ -60,7 +61,8 @@ const ListView = () => {
     { value: 'description', label: 'Description' },
     { value: 'collaborators', label: 'Collaborators' },
     { value: 'addresses', label: 'Addresses' },
-    { value: 'scope', label: 'Scope'}
+    { value: 'scope', label: 'Scope' },
+    { value: 'documents', label: 'Documents'}
   ];
 
   const handleTabsChange = (_, value) => {
@@ -88,10 +90,7 @@ const ListView = () => {
   }
 
   return (
-    <Page
-      className={classes.root}
-      title="Project Details"
-    >
+    <Page className={classes.root}>
       <Container maxWidth="lg">
         <Header />
         <Box mt={3}>
@@ -117,6 +116,7 @@ const ListView = () => {
           {currentTab === 'collaborators' && <Collaborators project={project} />}
           {currentTab === 'description' && <ProjectDescription project={project} />}
           {currentTab === 'scope' && <Scope isSubmitting={isSubmitting} project={project} onUpdate={handleOnUpdate} />}
+          {currentTab === 'documents' && <Documents project={project} />}
         </Box>
       </Container>
     </Page>

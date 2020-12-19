@@ -140,7 +140,7 @@ const Addresses = ({ project }) => {
   return (
     <Page
       className={classes.root}
-      title="Project Addresses"
+      title="Project addresses"
     >
       <Container maxWidth="lg">
         <Box mb={4}>

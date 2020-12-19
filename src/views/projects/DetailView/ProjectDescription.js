@@ -68,7 +68,7 @@ const Description = ({ project }) => {
   return (
     <Page
       className={classes.root}
-      title="Project Create"
+      title="Project description"
     >
       <Container maxWidth="lg">
         <Formik
