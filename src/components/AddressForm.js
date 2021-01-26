@@ -2,9 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types'
 
 import {
-  Box,
-  CardContent,
-  FormHelperText,
   Grid,
   TextField,
 } from '@material-ui/core';

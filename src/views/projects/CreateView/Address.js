@@ -101,7 +101,7 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
         }) => {
           try {
             resetForm();
-            onSubmit({...values })
+            onSubmit({ ...values })
             setStatus({ success: true });
             setSubmitting(false);
             onCancel()
@@ -218,7 +218,7 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
                             display="flex"
                           >
                             <Checkbox
-                              checked={values.invite}
+                              checked={values.save}
                               name="save"
                               onChange={handleChange}
                             />
