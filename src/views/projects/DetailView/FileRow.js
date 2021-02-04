@@ -12,7 +12,7 @@ import {
   TableRow,
 } from '@material-ui/core';
 
-const FileRow = ({ file, fileName, fileType, onComplete, projectId }) => {
+const FileRow = ({ contentType, file, fileName, fileType, onComplete, projectId }) => {
   const dispatch = useDispatch()
 
   const [progress, setProgress] = useState(0)
@@ -23,15 +23,18 @@ const FileRow = ({ file, fileName, fileType, onComplete, projectId }) => {
       url: 'upload/signedurl',
       data: {
         fileName,
-        fileType
+        contentType
       }
     })
 
     const { signedRequest, url } = response.data
     // Put the fileType in the headers for the upload
+
+    let size = null
+
     const options = {
       headers: {
-        'Content-Type': fileType
+        'Content-Type': contentType
       },
       onUploadProgress: (progressEvent) => {
         const totalLength = progressEvent.lengthComputable
@@ -39,6 +42,8 @@ const FileRow = ({ file, fileName, fileType, onComplete, projectId }) => {
           : progressEvent.target.getResponseHeader('content-length') ||
           progressEvent.target.getResponseHeader('x-decompressed-content-length')
         if (totalLength !== null) {
+          if (!size) size = totalLength
+
           const progressData = Math.round((progressEvent.loaded * 100) / totalLength)
 
           setProgress(progressData)
@@ -48,7 +53,7 @@ const FileRow = ({ file, fileName, fileType, onComplete, projectId }) => {
 
     await axios.put(signedRequest, file, options)
 
-    dispatch(createProjectDocument({ fileName, fileType, projectId, url }))
+    dispatch(createProjectDocument({ fileName, fileType, projectId, size, url }))
 
     onComplete({ fileName })
   }, [dispatch, file, fileName, fileType, onComplete, projectId])

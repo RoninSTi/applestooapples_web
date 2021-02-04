@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import mime from 'mime-types';
+
 import { useDispatch } from 'src/store/index'
 import { useSnackbar } from 'notistack';
 
@@ -104,9 +106,10 @@ const Documents = ({ project }) => {
     const [file] = e.target.files
     const fileParts = file.name.split('.');
     const [fileName, fileType] = fileParts;
+    const { type: contentType } = file; 
 
     const data = {
-      file, fileName, fileType
+      contentType, file, fileName, fileType
     }
 
     setFiles(prev => [...prev, data])
@@ -156,8 +159,9 @@ const Documents = ({ project }) => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {files.map(({ file, fileName, fileType }) => <FileRow
+                        {files.map(({ contentType, file, fileName, fileType }) => <FileRow
                           key={fileName}
+                          contentType={contentType}
                           file={file}
                           fileName={fileName}
                           fileType={fileType}
@@ -172,7 +176,7 @@ const Documents = ({ project }) => {
                             >
                               <TableCell />
                               <TableCell>
-                                <Link onClick={() => window.open(document.url)}>
+                                <Link download={`${document.fileName}`} href={document.url} target="_blank">
                                   {document.fileName}
                                 </Link>
                               </TableCell>
