@@ -51,7 +51,7 @@ const FileRow = ({ file, fileName, fileType, onComplete, projectId }) => {
     dispatch(createProjectDocument({ fileName, fileType, projectId, url }))
 
     onComplete({ fileName })
-  }, [dispatch, file, fileName, fileType])
+  }, [dispatch, file, fileName, fileType, onComplete, projectId])
 
   useEffect(() => {
     if (file && fileName && fileType) {

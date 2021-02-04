@@ -25,26 +25,6 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const typeOptions = [
-  {
-    value: 'architect',
-    label: 'Architect'
-  },
-  {
-    value: 'contractor',
-    label: 'Contractor'
-  },
-  {
-    value: 'designer',
-    label: 'Designer'
-  },
-  {
-    value: 'homeowner',
-    label: 'Homeowner'
-  },
-
-];
-
 const Invite = ({ className, isOpen, onCancel, ...rest }) => {
   const classes = useStyles();
 

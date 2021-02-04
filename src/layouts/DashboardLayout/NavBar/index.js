@@ -16,12 +16,9 @@ import {
   ListSubheader,
   makeStyles
 } from '@material-ui/core';
-import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import {
   Briefcase as BriefcaseIcon,
   Calendar as CalendarIcon,
-  ShoppingCart as ShoppingCartIcon,
-  Folder as FolderIcon,
   BarChart as BarChartIcon,
   Lock as LockIcon,
   UserPlus as UserPlusIcon,
@@ -35,7 +32,6 @@ import {
   MessageCircle as MessageCircleIcon,
   PieChart as PieChartIcon,
   Share2 as ShareIcon,
-  Users as UsersIcon
 } from 'react-feather';
 import AccountType from 'src/components/AccountType';
 import Logo from 'src/components/Logo';

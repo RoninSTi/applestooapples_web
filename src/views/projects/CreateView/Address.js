@@ -7,7 +7,6 @@ import { getAddresses } from 'src/slices/address'
 import clsx from 'clsx';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { useSnackbar } from 'notistack';
 
 import {
   Box,
@@ -45,7 +44,7 @@ const ADDRESS_INPUTS = [
   }
 ]
 
-const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...rest }) => {
+const Address = ({ editAddress, projectAddresses, className, isOpen, onCancel, onSubmit, onSubmitEdit, ...rest }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -62,23 +61,40 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
     onCancel()
   }
 
+  const initialValues = editAddress ?
+    {
+      address: editAddress?.address,
+      address2: editAddress?.address2,
+      city: editAddress?.city,
+      companyName: editAddress?.companyName,
+      country: editAddress?.country,
+      id: editAddress?.id,
+      input: 'edit',
+      name: editAddress?.name,
+      postalCode: editAddress?.postalCode,
+      save: true,
+      state: editAddress?.state,
+      type: editAddress?.type,
+    } :
+    {
+      address: '',
+      address2: '',
+      city: '',
+      companyName: '',
+      country: 'US',
+      id: null,
+      input: 'existing',
+      name: '',
+      postalCode: '',
+      save: true,
+      state: '',
+      type: 'project',
+    }
+  
   return (
     <Dialog open={isOpen}>
       <Formik
-        initialValues={{
-          address: '',
-          address2: '',
-          city: '',
-          companyName: '',
-          country: 'US',
-          id: null,
-          input: 'existing',
-          name: '',
-          postalCode: '',
-          save: true,
-          state: '',
-          type: 'project',
-        }}
+        initialValues={initialValues}
         validationSchema={Yup.object().shape({
           address: Yup.string(),
           address2: Yup.string(),
@@ -101,7 +117,16 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
         }) => {
           try {
             resetForm();
-            onSubmit({ ...values })
+
+            if (editAddress) {
+              onSubmitEdit({
+                ...values
+              })
+            } else {
+              onSubmit({
+                ...values
+              })
+            }
             setStatus({ success: true });
             setSubmitting(false);
             onCancel()
@@ -136,7 +161,7 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Add Project Address" />
+                <CardHeader title={`${editAddress ? 'Edit': 'Add'} Project Address`} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -169,7 +194,7 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid item xs={12}>
+                    {values.input !== 'edit' && <Grid item xs={12}>
                       <TextField
                         error={Boolean(touched.input && errors.input)}
                         fullWidth
@@ -192,7 +217,7 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
                           </option>
                         ))}
                       </TextField>
-                    </Grid>
+                    </Grid>}
                     {values.input === 'existing' &&
                       <Grid item xs={12}>
                         <Autocomplete
@@ -203,7 +228,7 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
                         />
                       </Grid>
                     }
-                    {values.input === 'new' &&
+                    {(values.input === 'new' || values.input === 'edit') &&
                       <>
                         <AddressForm
                           errors={errors}
@@ -255,7 +280,7 @@ const Address = ({ projectAddresses, className, isOpen, onCancel, onSubmit, ...r
                   >
                     {isSubmitting && <CircularProgress size='sm' />}
                     {' '}
-                      Add Address
+                    {`${editAddress ? 'Edit' : 'Add'} Address`}
                     </Button>
                 </Box>
               </Card>

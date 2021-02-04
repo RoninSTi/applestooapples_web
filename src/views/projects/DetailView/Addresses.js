@@ -25,6 +25,7 @@ import {
 } from '@material-ui/core';
 import {
   Check as CheckIcon,
+  Edit2 as PencilIcon,
   Trash as TrashIcon,
   X as XIcon,
 } from 'react-feather';
@@ -32,7 +33,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import { ADDRESS_TYPES } from 'src/utils/enums'
 
-import { updateProject } from 'src/slices/projects'
+import { editProjectAddress, updateProject } from 'src/slices/projects'
 
 import Address from '../CreateView/Address';
 import Page from 'src/components/Page';
@@ -56,6 +57,7 @@ const Addresses = ({ project }) => {
   const [addresses, setAddresses] = useState([])
   const [addIsOpen, setAddIsOpen] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState(null)
+  const [editAddress, setEditAddress] = useState(null)
 
   useEffect(() => {
     if (project) {
@@ -72,6 +74,12 @@ const Addresses = ({ project }) => {
   }
 
   const handleOnClickAdd = () => {
+    setAddIsOpen(true)
+  }
+
+  const handleOnClickEdit = (event, ea) => {
+    setEditAddress(ea)
+
     setAddIsOpen(true)
   }
 
@@ -116,6 +124,24 @@ const Addresses = ({ project }) => {
       data,
       successMessage: 'Address added to project'
     })
+  }
+
+  const handleOnSubmitEditAddress = async data => {
+    try {
+      await dispatch(editProjectAddress({
+        addressId: editAddress.id,
+        data,
+        projectId: project.id
+      }))
+
+      enqueueSnackbar('Address updated', {
+        variant: 'success'
+      });
+    } catch (err) {
+      enqueueSnackbar('Address update failed', {
+        variant: 'error'
+      });
+    }
   }
 
   const updateWithData = async ({ data, successMessage }) => {
@@ -207,6 +233,13 @@ const Addresses = ({ project }) => {
                                     <TrashIcon />
                                   </SvgIcon>
                                 </IconButton>
+                                <IconButton
+                                  onClick={(event) => handleOnClickEdit(event, address)}
+                                >
+                                  <SvgIcon fontSize="small">
+                                    <PencilIcon />
+                                  </SvgIcon>
+                                </IconButton>
                               </TableCell>
                             </TableRow>
                           );
@@ -246,10 +279,12 @@ const Addresses = ({ project }) => {
         }
       </Popper>
       <Address
+        editAddress={editAddress}
         projectAddresses={addresses}
         isOpen={addIsOpen}
         onCancel={handleOnClickCancelAdd}
         onSubmit={handleOnSubmitAddAddress}
+        onSubmitEdit={handleOnSubmitEditAddress}
       />
     </Page>
   );

@@ -228,14 +228,13 @@ const Collaborators = ({ project }) => {
                                       <TrashIcon />
                                     </SvgIcon>
                                   </IconButton>
-                                  {collaborator.invitationStatus !== 'unasked' &&
-                                    <IconButton
-                                      onClick={(event) => handleOnClickResend(event, collaborator)}
-                                    >
-                                      <SvgIcon fontSize="small">
-                                        <SendIcon />
-                                      </SvgIcon>
-                                    </IconButton>}
+                                  <IconButton
+                                    onClick={(event) => handleOnClickResend(event, collaborator)}
+                                  >
+                                    <SvgIcon fontSize="small">
+                                      <SendIcon />
+                                    </SvgIcon>
+                                  </IconButton>
                                 </Box>
                               </TableCell>
                             </TableRow>
