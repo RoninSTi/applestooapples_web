@@ -3,9 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import api from 'src/utils/api'
 import axios from 'axios'
 
-import { useDispatch } from 'src/store'
-import { createProjectDocument } from 'src/slices/projects'
-
 import { useSnackbar } from 'notistack'
 
 import {
@@ -19,13 +16,9 @@ import {
   makeStyles
 } from '@material-ui/core';
 import {
-  Check as CheckIcon,
   File as FileIcon,
   XCircle as CancelIcon,
-  PlusCircle as PlusIcon,
   Trash as DeleteIcon,
-  Upload as UploadIcon,
-  X as XIcon,
 } from 'react-feather';
 
 const CancelToken = axios.CancelToken;
@@ -49,8 +42,6 @@ const FileRow = ({ fileData, onCancel, onComplete, onDelete }) => {
   const { contentType, file, fileName, fileType } = fileData;
 
   const classes = useStyles()
-
-  const dispatch = useDispatch()
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -93,7 +84,7 @@ const FileRow = ({ fileData, onCancel, onComplete, onDelete }) => {
     };
 
     await axios.put(signedRequest, file, options)
-  }, [dispatch, file, fileName, fileType, setUrl])
+  }, [contentType, file, fileName, setUrl])
 
   useEffect(() => {
     if (file && fileName && fileType) {
@@ -102,7 +93,7 @@ const FileRow = ({ fileData, onCancel, onComplete, onDelete }) => {
   }, [file, fileName, fileType, upload])
 
   useEffect(() => {
-    if (progress === 100) {
+    if (progress === 100 && status !== STATUS.COMPLETE) {
       setStatus(STATUS.COMPLETE)
 
       onComplete({
@@ -114,7 +105,7 @@ const FileRow = ({ fileData, onCancel, onComplete, onDelete }) => {
         variant: 'success'
       });
     } 
-  }, [progress, setStatus])
+  }, [enqueueSnackbar, fileData, onComplete, progress, setStatus, status, url])
 
   const handleOnClickCancel = () => {
     source.cancel()

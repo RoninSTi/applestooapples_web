@@ -1,48 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { useDispatch, useSelector } from 'src/store/index'
+import { useDispatch } from 'src/store/index'
 import { createProjectDocument } from 'src/slices/projects'
 
 import clsx from 'clsx';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
 
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
-  CircularProgress,
   Dialog,
   Divider,
-  FormHelperText,
-  Grid,
-  IconButton,
-  LinearProgress,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  ListItemText,
   SvgIcon,
-  TextField,
   Typography,
   makeStyles
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import {
-  File as FileIcon,
   PlusCircle as PlusIcon,
-  Trash as TrashIcon,
-  X as XIcon,
 } from 'react-feather';
 
-import AddressForm from 'src/components/AddressForm'
 import FileRow from './FileRow'
 
 const useStyles = makeStyles(() => ({
@@ -52,23 +33,6 @@ const useStyles = makeStyles(() => ({
     minWidth: '100%'
   }
 }));
-
-{/* <>
-  <label htmlFor="btn-upload">
-    <input
-      id="btn-upload"
-      name="btn-upload"
-      style={{ display: 'none' }}
-      type="file"
-      onChange={handleUpload} />
-    <Button
-      className="btn-choose"
-      color="secondary"
-      component="span" >
-      Choose Files
-          </Button>
-  </label>
-</> */}
 
 const UploadModal = ({ isOpen, onCancel, projectId }) => {
   const dispatch = useDispatch()
