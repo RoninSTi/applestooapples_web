@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import mime from 'mime-types';
-
 import { useDispatch } from 'src/store/index'
 import { useSnackbar } from 'notistack';
 
@@ -37,6 +35,7 @@ import { deleteProjectDocument } from 'src/slices/projects'
 
 import FileRow from './FileRow'
 import Page from 'src/components/Page';
+import UploadModal from './UploadModal';
 
 const useStyles = makeStyles((theme) => ({
   popper: {
@@ -58,6 +57,7 @@ const Documents = ({ project }) => {
   const [documentToDelete, setDocumentToDelete] = useState(null)
 
   const [files, setFiles] = useState([])
+  const [uploadIsOpen, setUploadIsOpen] = useState(false)
 
   useEffect(() => {
     if (project) {
@@ -102,18 +102,23 @@ const Documents = ({ project }) => {
   }
 
   // Perform the upload
-  const handleUpload = async e => {
-    const [file] = e.target.files
-    const fileParts = file.name.split('.');
-    const [fileName, fileType] = fileParts;
-    const { type: contentType } = file; 
+  const handleUpload = () => {
+    setUploadIsOpen(true);
+    // const [file] = e.target.files
+    // const fileParts = file.name.split('.');
+    // const [fileName, fileType] = fileParts;
+    // const { type: contentType } = file; 
 
-    const data = {
-      contentType, file, fileName, fileType
-    }
+    // const data = {
+    //   contentType, file, fileName, fileType
+    // }
 
-    setFiles(prev => [...prev, data])
+    // setFiles(prev => [...prev, data])
   } 
+
+  const handleUploadModalOnCancel = () => {
+    setUploadIsOpen(false);
+  }
 
   const popperIsOpen = Boolean(anchorEl)
 
@@ -126,24 +131,15 @@ const Documents = ({ project }) => {
         <Box mb={4}>
           <Card>
             <CardHeader
-              action={
-                <>
-                  <label htmlFor="btn-upload">
-                    <input
-                      id="btn-upload"
-                      name="btn-upload"
-                      style={{ display: 'none' }}
-                      type="file"
-                      onChange={handleUpload} />
-                    <Button
-                      className="btn-choose"
-                      color="secondary"
-                      component="span" >
-                      Choose Files
-          </Button>
-                  </label>
-                </>
-              } />
+              action={<Button
+                className="btn-choose"
+                color="secondary"
+                component="span"
+              onClick={handleUpload}>
+                Choose Files
+                </Button>
+              }
+            />
             <Divider />
             <CardContent>
               {(documents.length > 0 || files.length > 0) ? (
@@ -227,6 +223,7 @@ const Documents = ({ project }) => {
           </Paper>
         }
       </Popper>
+      <UploadModal isOpen={uploadIsOpen} onCancel={handleUploadModalOnCancel} projectId={project.id} />
     </Page>
   );
 };
