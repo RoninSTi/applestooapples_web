@@ -22,6 +22,7 @@ import Documents from './Documents'
 import Header from './Header'
 import ProjectDescription from './ProjectDescription'
 import Scope from './Scope'
+import Specifications from './Specifications'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +63,8 @@ const ListView = () => {
     { value: 'collaborators', label: 'Collaborators' },
     { value: 'addresses', label: 'Addresses' },
     { value: 'scope', label: 'Scope' },
-    { value: 'documents', label: 'Documents'}
+    { value: 'documents', label: 'Documents'},
+    { value: 'specifications', label: 'Specifications'},
   ];
 
   const handleTabsChange = (_, value) => {
@@ -117,6 +119,7 @@ const ListView = () => {
           {currentTab === 'description' && <ProjectDescription project={project} />}
           {currentTab === 'scope' && <Scope isSubmitting={isSubmitting} project={project} onUpdate={handleOnUpdate} />}
           {currentTab === 'documents' && <Documents project={project} />}
+          {currentTab === 'specifications' && <Specifications project={project} />}
         </Box>
       </Container>
     </Page>
