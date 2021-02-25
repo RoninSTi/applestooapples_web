@@ -182,6 +182,37 @@ export const updateProject = ({ projectId, data }) => async (dispatch) => {
     data
   })
 
+  console.log('DATA', data)
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const createProjectSpecification = ({ data, projectId }) => async dispatch => {
+  const response = await api({
+    method: 'post',
+    url: `project/${projectId}/specification`,
+    data
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const editProjectSpecification = ({ data, roomSpecificationId }) => async dispatch => {
+  const response = await api({
+    method: 'put',
+    url: `specification/${roomSpecificationId}`,
+    data
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const deleteProjectSpecification = ({ roomSpecificationId }) => async dispatch => {
+  const response = await api({
+    method: 'delete',
+    url: `specification/${roomSpecificationId}`
+  })
+
   dispatch(slice.actions.updateProject({ project: response.data }))
 }
 

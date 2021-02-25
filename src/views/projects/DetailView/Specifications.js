@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { useDispatch } from 'src/store/index'
 import { useSnackbar } from 'notistack';
+import moment from 'moment';
 
 import {
   Box,
@@ -25,17 +26,16 @@ import {
 } from '@material-ui/core';
 import {
   Check as CheckIcon,
-  Send as SendIcon,
+  Edit2 as PencilIcon,
   Trash as TrashIcon,
   X as XIcon,
 } from 'react-feather';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
-import { COLLABORATOR_ROLES, INVITATION_STATUS } from 'src/utils/enums'
+import { createProjectSpecification, deleteProjectSpecification, editProjectSpecification } from 'src/slices/projects'
+import { ROOM_SPECIFICATIONS } from 'src/utils/enums'
 
-import { resendProjectInvite, updateProject } from 'src/slices/projects'
-
-import AddRoomModal from './AddRoomModal';
+import AddRoomModal from '../CreateView/AddRoomModal'
 import Page from 'src/components/Page';
 
 const useStyles = makeStyles((theme) => ({
@@ -54,9 +54,11 @@ const Specifications = ({ project }) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null)
-  const [specifications, setSpecifications] = useState([])
+  const [editSpecification, setEditSpecification] = useState(null)
   const [roomSpecificationIsOpen, setRoomSpecificationIsOpen] = useState(false)
+  const [specifications, setSpecifications] = useState([])
   const [specificationToDelete, setSpecificationToDelete] = useState(null)
+
 
   useEffect(() => {
     if (project) {
@@ -81,69 +83,59 @@ const Specifications = ({ project }) => {
     setSpecificationToDelete(ctd)
     setAnchorEl(anchorEl ? null : event.currentTarget);
   }
+  
+  const handleOnClickEdit = (event, ea) => {
+    setEditSpecification(ea)
 
-  const handleOnClickDeleteSpecification = () => {
-    setSpecifications(prevSpecifications => {
-      const newSpecifications = prevSpecifications.filter(({ id }) => id !== specificationToDelete.id)
-
-      const data = {
-        specifications: newSpecifications
-      }
-
-      updateWithData({
-        data,
-        successMessage: 'Specification deleted'
-      })
-
-      return newSpecifications
-    })
-    
-    setAnchorEl(null)
+    setRoomSpecificationIsOpen(true)
   }
 
-  const handleOnClickResend = async (_, specification) => {
-
+  const handleOnSubmitEditSpecification = async data => {
     try {
-      await dispatch(resendProjectInvite({
-        specificationId: specification.id,
+      await dispatch(editProjectSpecification({
+        roomSpecificationId: editSpecification.id,
+        data,
         projectId: project.id
       }))
 
-      enqueueSnackbar('Invite resent', {
+      enqueueSnackbar('Address updated', {
         variant: 'success'
-      })
+      });
     } catch (err) {
-      enqueueSnackbar(err.message, {
+      enqueueSnackbar('Address update failed', {
         variant: 'error'
-      })
+      });
     }
   }
 
-  const handleOnSubmitRoomSpecification = specification => {
-    console.log('specification', specification)
-    // const data = {
-    //   specifications: [
-    //     ...specifications,
-    //     specification
-    //   ],
-    // };
-
-    // updateWithData({
-    //   data,
-    //   successMessage: 'Specification added'
-    // })
-  }
-
-  const updateWithData = async ({ data, successMessage }) => {
+  const handleOnClickDeleteSpecification = async () => {
     try {
-      await dispatch(updateProject({
-        data,
+      await dispatch(deleteProjectSpecification({
+        roomSpecificationId: specificationToDelete.id,
         projectId: project.id
       }));
 
-      enqueueSnackbar(successMessage, {
+      enqueueSnackbar('Address deleted from project', {
         variant: 'success'
       });
+    } catch (err) {
+      enqueueSnackbar(err.message, {
+        variant: 'error'
+      });
+    }
+    setAnchorEl(null)
+  }
+
+  const handleOnSubmitRoomSpecification = async specification => {
+      try {
+        await dispatch(createProjectSpecification({
+          data: specification,
+          projectId: project.id
+        }));
+
+        enqueueSnackbar('Address added to project', {
+          variant: 'success'
+        });
     } catch (err) {
       enqueueSnackbar(err.message, {
         variant: 'error'
@@ -175,9 +167,8 @@ const Specifications = ({ project }) => {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Role</TableCell>
-                          <TableCell>Name</TableCell>
-                          <TableCell>Invitation status</TableCell>
+                          <TableCell>Room</TableCell>
+                          <TableCell>Date</TableCell>
                           <TableCell align="right">Actions</TableCell>
                         </TableRow>
                       </TableHead>
@@ -186,57 +177,39 @@ const Specifications = ({ project }) => {
                           return (
                             <TableRow
                               hover
-                              key={specification.role}
+                              key={specification.id}
                             >
                               <TableCell>
                                 <Typography
                                   variant="body2"
                                   color="textSecondary"
                                 >
-                                  {COLLABORATOR_ROLES.find(({ value }) => value === specification.role).label}
+                                  {ROOM_SPECIFICATIONS.find(({ value }) => value === specification.room).label}
                                 </Typography>
                               </TableCell>
                               <TableCell>
-                                <Box
-                                  display="flex"
-                                  alignItems="center"
+                                <Typography
+                                  variant="body2"
+                                  color="textSecondary"
                                 >
-                                  <div>
-                                    <Typography
-                                      variant="body2"
-                                      color="textSecondary"
-                                    >
-                                      {`${specification.lastName}, ${specification.firstName}`}
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      color="textSecondary"
-                                    >
-                                      {specification.email}
-                                    </Typography>
-                                  </div>
-                                </Box>
-                              </TableCell>
-                              <TableCell>
-                                {INVITATION_STATUS.find(({ value }) => value === specification.invitationStatus).label}
+                                  {moment(specification.date).format('MMMM YYYY')}
+                                </Typography>
                               </TableCell>
                               <TableCell align="right">
-                                <Box display='flex' justifyContent='flex-end'>
-                                  <IconButton
-                                    onClick={(event) => handleOnClickDelete(event, specification)}
-                                  >
-                                    <SvgIcon fontSize="small">
-                                      <TrashIcon />
-                                    </SvgIcon>
-                                  </IconButton>
-                                  <IconButton
-                                    onClick={(event) => handleOnClickResend(event, specification)}
-                                  >
-                                    <SvgIcon fontSize="small">
-                                      <SendIcon />
-                                    </SvgIcon>
-                                  </IconButton>
-                                </Box>
+                                <IconButton
+                                  onClick={(event) => handleOnClickDelete(event, specification)}
+                                >
+                                  <SvgIcon fontSize="small">
+                                    <TrashIcon />
+                                  </SvgIcon>
+                                </IconButton>
+                                <IconButton
+                                  onClick={(event) => handleOnClickEdit(event, specification)}
+                                >
+                                  <SvgIcon fontSize="small">
+                                    <PencilIcon />
+                                  </SvgIcon>
+                                </IconButton>
                               </TableCell>
                             </TableRow>
                           );
@@ -277,9 +250,11 @@ const Specifications = ({ project }) => {
       </Popper>
       <AddRoomModal 
         isOpen={roomSpecificationIsOpen} 
+        editSpecification={editSpecification}
         onCancel={handleAddRoomModalOnCancel} 
         onSubmit={handleOnSubmitRoomSpecification}
-        projectId={project.id} />
+        onSubmitEdit={handleOnSubmitEditSpecification}
+      />
     </Page>
   );
 };

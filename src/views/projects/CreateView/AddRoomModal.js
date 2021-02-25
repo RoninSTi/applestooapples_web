@@ -33,25 +33,33 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AddRoomModal = ({ className, isOpen, onCancel, onSubmit, ...rest }) => {
+const AddRoomModal = ({ className, editSpecification, isOpen, onCancel, onSubmit, onSubmitEdit, ...rest }) => {
   const classes = useStyles();
 
   const handleOnClickCancel = () => {
     onCancel()
   }
 
+  const initialValues = editSpecification ?
+  {
+    date: editSpecification?.date,
+    room: editSpecification?.room,
+    items: editSpecification?.items
+  } :
+  {
+    date: new Date(),
+    room: ROOM_SPECIFICATIONS[0]?.value,
+    items: []
+  }
+
   return (
     <Dialog open={isOpen}>
       <Formik
-        initialValues={{
-          date: new Date(),
-          name: '',
-          items: []
-        }}
+        initialValues={initialValues}
         validationSchema={Yup.object().shape({
-          name: Yup.string().required(),
+          room: Yup.string().required(),
           date: Yup.date(),
-          room: Yup.array()
+          items: Yup.string()
         })}
         onSubmit={async (values, {
           resetForm,
@@ -60,9 +68,15 @@ const AddRoomModal = ({ className, isOpen, onCancel, onSubmit, ...rest }) => {
         }) => {
           try {
             resetForm();
-            onSubmit({
-              ...values,
-            })
+            if (editSpecification) {
+              onSubmitEdit({
+                ...values
+              })
+            } else {
+              onSubmit({
+                ...values
+              })
+            }
             setStatus({ success: true });
 
             onCancel()
@@ -89,7 +103,7 @@ const AddRoomModal = ({ className, isOpen, onCancel, onSubmit, ...rest }) => {
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Add Collaborator" />
+                <CardHeader title={`${editSpecification ? 'Edit': 'Add'} Room Specification`} />
                 <Divider />
                 <CardContent>
                 <Grid
@@ -100,21 +114,21 @@ const AddRoomModal = ({ className, isOpen, onCancel, onSubmit, ...rest }) => {
                   >
                   <Grid item sm={12} md={12}>
                     <TextField
-                      error={Boolean(touched.name && errors.name)}
+                      error={Boolean(touched.room && errors.room)}
                       fullWidth
-                      helperText={touched.name && errors.name}
+                      helperText={touched.room && errors.room}
                       label="Room"
-                      name="name"
+                      name="room"
                       onBlur={handleBlur}
                       onChange={handleChange}
                       select
                       SelectProps={{ native: true }}
-                      value={values.name}
+                      value={values.room}
                       variant="outlined"
                     >
-                      {ROOM_SPECIFICATIONS.map(({ label, value }) => (
+                      {ROOM_SPECIFICATIONS.map(({ label, value }, i) => (
                         <option
-                          key={value}
+                          key={`value-${i}`}
                           value={value}
                         >
                           {label}
@@ -162,7 +176,7 @@ const AddRoomModal = ({ className, isOpen, onCancel, onSubmit, ...rest }) => {
                     variant="contained"
                   >
                     {isSubmitting && <CircularProgress size='sm' />}
-                      Add Room
+                    {`${editSpecification ? 'Edit': 'Add'} Room Specification`}
                     </Button>
                 </Box>
               </Card>

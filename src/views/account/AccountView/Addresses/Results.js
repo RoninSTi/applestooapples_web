@@ -58,7 +58,7 @@ const Results = ({ accountId, addresses, onClickEdit }) => {
     setIsDeleting(true)
 
     try {
-      await dispatch(deleteAddress({ accountId, addressId: addressToDelete.id}))
+      // await dispatch(deleteAddress({ accountId, addressId: addressToDelete.id}))
     } catch (error) {
       console.log({ error })
     } finally {
