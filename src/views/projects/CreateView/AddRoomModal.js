@@ -33,18 +33,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AddRoomModal = ({ className, editSpecification, isOpen, onCancel, onSubmit, onSubmitEdit, ...rest }) => {
+const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSubmit, onSubmitEdit, ...rest }) => {
   const classes = useStyles();
 
   const handleOnClickCancel = () => {
     onCancel()
   }
 
-  const initialValues = editSpecification ?
+  const initialValues = editRoomSpecification ?
   {
-    date: editSpecification?.date,
-    room: editSpecification?.room,
-    items: editSpecification?.items
+    date: editRoomSpecification?.date,
+    room: editRoomSpecification?.room,
+    items: editRoomSpecification?.items
   } :
   {
     date: new Date(),
@@ -68,7 +68,7 @@ const AddRoomModal = ({ className, editSpecification, isOpen, onCancel, onSubmit
         }) => {
           try {
             resetForm();
-            if (editSpecification) {
+            if (editRoomSpecification) {
               onSubmitEdit({
                 ...values
               })
@@ -103,7 +103,7 @@ const AddRoomModal = ({ className, editSpecification, isOpen, onCancel, onSubmit
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title={`${editSpecification ? 'Edit': 'Add'} Room Specification`} />
+                <CardHeader title={`${editRoomSpecification ? 'Edit': 'Add'} Room Specification`} />
                 <Divider />
                 <CardContent>
                 <Grid
@@ -176,7 +176,7 @@ const AddRoomModal = ({ className, editSpecification, isOpen, onCancel, onSubmit
                     variant="contained"
                   >
                     {isSubmitting && <CircularProgress size='sm' />}
-                    {`${editSpecification ? 'Edit': 'Add'} Room Specification`}
+                    {`${editRoomSpecification ? 'Edit': 'Add'} Room Specification`}
                     </Button>
                 </Box>
               </Card>
