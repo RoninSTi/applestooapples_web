@@ -42,6 +42,8 @@ export const COLLABORATOR_ROLES = [
   }
 ]
 
+export const CURRENCY = ["USD", "CAD", "GBP", "EUR"];
+
 export const INVITATION_STATUS = [
   {
     label: 'Accepted',
@@ -61,6 +63,18 @@ export const INVITATION_STATUS = [
   }
 ];
 
+export const MATERIALS = [
+  { label: "Plumbing", value: "plumbing" },
+  { label: "Lighting", value: "lighting" },
+  { label: "Finishes", value: "finishes" },
+  { label: "Stone", value: "stone" },
+  { label: "Appliances", value: "appliances" },
+  { label: "Accessories", value: "accessories" },
+  { label: "Upholstery", value: "upholstery" },
+  { label: "Furnishings", value: "furnishings" },
+  { label: "Hardware", value: "hardware" },
+];
+
 export const PROJECT_TYPES = [
   {
     label: 'New',
@@ -69,6 +83,22 @@ export const PROJECT_TYPES = [
     label: 'Remodel',
     value: 'remodel'
   }
+];
+
+export const PHASES = [
+  { label: "Pre-construction", value: "pre" },
+  { label: "Demo", value: "demo" },
+  { label: "Sitwork/Foundation/Grading", value: "site" },
+  { label: "Rough Framing", value: "framing" },
+  { label: "Rough Plumbing/Electrical/Mechanical", value: "mechanical" },
+  { label: "Trim-out", value: "trim" },
+  { label: "Finish", value: "finish" },
+];
+
+export const PROVIDED = [
+  { label: "Contractor", value: "contractor" },
+  { label: "Designer", value: "designer" },
+  { label: "Owner", value: "owner" },
 ];
 
 export const ROOM_SPECIFICATIONS = [

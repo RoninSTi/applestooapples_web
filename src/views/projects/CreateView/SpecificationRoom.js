@@ -21,13 +21,16 @@ import {
   Trash as TrashIcon,
   ChevronDown as CheckDown ,
   ChevronUp as CheckUp,
+  PlusCircle as Add,
   X as XIcon,
 } from 'react-feather';
 
-import { deleteProjectSpecification, editProjectSpecification } from 'src/slices/projects'
+import { createProjectSpecificationItem, deleteProjectSpecification, editProjectSpecification } from 'src/slices/projects'
 import { ROOM_SPECIFICATIONS } from 'src/utils/enums'
 
 import AddRoomModal from './AddRoomModal'
+import AddSpecificationItemModal from './AddSpecificationItemModal'
+import SpecificationItems from './SpecificationItems'
 
 const useStyles = makeStyles((theme) => ({
   popper: {
@@ -45,9 +48,10 @@ const SpecificationRoom = ({ projectId, specification }) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null)
-  const [editRoomSpecification, setEditRoomSpecification] = useState(null)
-  const [specificationIsOpen, setRoomSpecificationIsOpen] = useState(false)
+  const [editSpecificationItem, setEditSpecificationItem] = useState(null)
+  const [itemIsOpen, seItemIsOpen] = useState(false)
   const [rowIsOpen, setOnClickRowIsOpen] = useState(false)
+  const [specificationIsOpen, setRoomSpecificationIsOpen] = useState(false)
   const [specificationToDelete, setRoomSpecificationToDelete] = useState(null)
 
   const dispatch = useDispatch()
@@ -59,13 +63,18 @@ const SpecificationRoom = ({ projectId, specification }) => {
     setRoomSpecificationToDelete(null)
   }
 
+  const handleOnClickAdd = () => {
+    seItemIsOpen(true)
+  }
+
   const handleOnClickDelete = (event, ctd) => {
     setRoomSpecificationToDelete(ctd)
+
     setAnchorEl(anchorEl ? null : event.currentTarget);
   }
   
   const handleOnClickEdit = (event, ea) => {
-    setEditRoomSpecification(ea)
+    setEditSpecificationItem(ea)
 
     setRoomSpecificationIsOpen(true)
   }
@@ -73,7 +82,7 @@ const SpecificationRoom = ({ projectId, specification }) => {
   const handleOnSubmitEditRoomSpecification = async data => {
     try {
       await dispatch(editProjectSpecification({
-        roomRoomSpecificationRoomId: editRoomSpecification.id,
+        roomSpecificationId: editSpecificationItem.id,
         data,
         projectId
       }))
@@ -91,7 +100,7 @@ const SpecificationRoom = ({ projectId, specification }) => {
   const handleOnClickDeleteRoomSpecification = async () => {
     try {
       await dispatch(deleteProjectSpecification({
-        roomRoomSpecificationRoomId: specificationToDelete.id,
+        roomSpecificationId: specificationToDelete.id,
         projectId
       }));
 
@@ -106,12 +115,34 @@ const SpecificationRoom = ({ projectId, specification }) => {
     setAnchorEl(null)
   }
 
+  const handleOnSubmitItem = async specificationItem => {
+    try {
+      await dispatch(createProjectSpecificationItem({
+        data: specificationItem,
+        projectId,
+        roomSpecificationId: specification.id
+      }));
+
+      enqueueSnackbar('Address added to project', {
+        variant: 'success'
+      });
+    } catch (err) {
+      enqueueSnackbar(err.message, {
+        variant: 'error'
+      });
+    }
+  }
+
   const popperIsOpen = Boolean(anchorEl)
 
   const handleOnClickRowIsOpen = () => setOnClickRowIsOpen(prev => !prev)
 
   const handleAddRoomModalOnCancel = () => {
     setRoomSpecificationIsOpen(false);
+  }
+
+  const handleAddItemModalOnCancel = () => {
+    seItemIsOpen(false);
   }
 
   return (
@@ -145,6 +176,11 @@ const SpecificationRoom = ({ projectId, specification }) => {
           </Typography>
         </TableCell>
         <TableCell align="right">
+          <IconButton onClick={handleOnClickAdd}>
+            <SvgIcon fontSize="small">
+              <Add />
+            </SvgIcon>
+          </IconButton>
           <IconButton onClick={(event) => handleOnClickDelete(event, specification)}>
             <SvgIcon fontSize="small">
               <TrashIcon />
@@ -157,6 +193,8 @@ const SpecificationRoom = ({ projectId, specification }) => {
           </IconButton>
         </TableCell>
       </TableRow>
+
+      <SpecificationItems specification={specification} isOpen={rowIsOpen} />
 
       <Popper open={popperIsOpen} anchorEl={anchorEl}>
         {!!specificationToDelete &&
@@ -177,9 +215,16 @@ const SpecificationRoom = ({ projectId, specification }) => {
           </Paper>
         }
       </Popper>
+
+      <AddSpecificationItemModal 
+        isOpen={itemIsOpen} 
+        onCancel={handleAddItemModalOnCancel} 
+        onSubmit={handleOnSubmitItem}
+      />
+
       <AddRoomModal 
         isOpen={specificationIsOpen} 
-        editRoomSpecification={editRoomSpecification}
+        editSpecificationItem={editSpecificationItem}
         onCancel={handleAddRoomModalOnCancel} 
         onSubmitEdit={handleOnSubmitEditRoomSpecification}
       />
