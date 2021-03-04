@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { Grid, makeStyles, TextField } from "@material-ui/core";
 
 import {
+  CATEGORIES,
   CURRENCY,
-  MATERIALS,
   PHASES,
   PROVIDED
 } from 'src/utils/enums'
@@ -39,16 +39,16 @@ const SpecificationItemForm = ({
           error={Boolean(touched.material && errors.material)}
           fullWidth
           helperText={touched.material && errors.material}
-          label="Material"
-          name="material"
+          label="Category"
+          name="category"
           onBlur={handleBlur}
           onChange={handleChange}
           select
           SelectProps={{ native: true }}
-          value={values.material}
+          value={values.category}
           variant="outlined"
         >
-          {MATERIALS.map(({ label, value }) => (
+          {CATEGORIES.map(({ label, value }) => (
             <option key={value} value={value}>
               {label}
             </option>

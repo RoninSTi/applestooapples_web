@@ -63,7 +63,7 @@ export const INVITATION_STATUS = [
   }
 ];
 
-export const MATERIALS = [
+export const CATEGORIES = [
   { label: "Plumbing", value: "plumbing" },
   { label: "Lighting", value: "lighting" },
   { label: "Finishes", value: "finishes" },

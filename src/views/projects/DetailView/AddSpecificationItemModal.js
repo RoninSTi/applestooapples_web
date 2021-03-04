@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 
 import {
-  MATERIALS,
+  CATEGORIES,
   PHASES,
   PROVIDED
 } from 'src/utils/enums'
@@ -58,7 +58,7 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
       finish: editSpecificationItem?.finish,
       item: editSpecificationItem?.item,
       manufacturer: editSpecificationItem?.manufacturer,
-      material: editSpecificationItem?.material,
+      category: editSpecificationItem?.category,
       model: editSpecificationItem?.model,
       phase: editSpecificationItem?.phase,
       provided: editSpecificationItem?.provided,
@@ -75,14 +75,16 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
       finish: '',
       item: '',
       manufacturer: '',
-      material: MATERIALS[0].value,
+      category: CATEGORIES[0].value,
       model: '',
       phase: PHASES[0].value,
       provided: PROVIDED[0].value,
       qty: 0,
       total: 0,
       um: ''
-  }
+    }
+  
+  console.log({ initialValues })
 
   
   return (
@@ -90,6 +92,7 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
       <Formik
         initialValues={initialValues}
         validationSchema={Yup.object().shape({
+          category: Yup.string(),
           comments: Yup.string(),
           cost: Yup.number(),
           currency: Yup.string(),
@@ -98,7 +101,6 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
           finish: Yup.string(),
           item: Yup.string(),
           manufacturer: Yup.string(),
-          material: Yup.string(),
           model: Yup.string(),
           phase: Yup.string(),
           provided: Yup.string(),
@@ -145,13 +147,14 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
           touched,
           values
         }) => {
+          console.log({ values })
           return (
             <form onSubmit={handleSubmit}>
               <Card
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title={`${editSpecificationItem ? 'Edit': 'Add'} Project Address`} />
+                <CardHeader title={`${editSpecificationItem ? 'Edit': 'Add'} Item`} />
                 <Divider />
                 <CardContent>
                   <Grid

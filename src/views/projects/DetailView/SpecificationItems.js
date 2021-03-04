@@ -90,24 +90,6 @@ const SpecificationItems = ({ specification, isOpen }) => {
     }
   }
 
-  const handleOnClickDeleteItem = async () => {
-    console.log('ASDADA', specificationItemToDelete)
-    try {
-      await dispatch(deleteProjectSpecificationItem({
-        specificationItemId: specificationItemToDelete.id,
-      }));
-
-      enqueueSnackbar('Item deleted from project', {
-        variant: 'success'
-      });
-    } catch (err) {
-      enqueueSnackbar(err.message, {
-        variant: 'error'
-      });
-    }
-    setAnchorEl(null)
-  }
-
   const popperIsOpen = Boolean(anchorEl)
 
   const handleAddItemModalOnCancel = () => {
@@ -154,7 +136,7 @@ const SpecificationItems = ({ specification, isOpen }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {specification.items.map(item => (
+                      {/* {specification.items.map(item => (
                         <TableRow key={item.id}>
                           <TableCell>
                             <Typography
@@ -289,7 +271,7 @@ const SpecificationItems = ({ specification, isOpen }) => {
                             </IconButton>
                           </TableCell>
                         </TableRow>
-                      ))}
+                      ))} */}
                     </TableBody>
                   </Table>
                 </CardContent>

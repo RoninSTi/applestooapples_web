@@ -20,34 +20,25 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-import { KeyboardDatePicker } from '@material-ui/pickers';
-
 import { ROOM_SPECIFICATIONS } from 'src/utils/enums'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
-  datePicker: {
-    '& + &': {
-      marginLeft: theme.spacing(2)
-    }
-  }
 }));
 
-const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSubmit, onSubmitEdit, ...rest }) => {
+const AddRoomModal = ({ className, editSpecificationRoom, isOpen, onCancel, onSubmit, onSubmitEdit, ...rest }) => {
   const classes = useStyles();
 
   const handleOnClickCancel = () => {
     onCancel()
   }
 
-  const initialValues = editRoomSpecification ?
+  const initialValues = editSpecificationRoom ?
   {
-    date: editRoomSpecification?.date,
-    room: editRoomSpecification?.room,
-    items: editRoomSpecification?.items
+    room: editSpecificationRoom?.room,
+    items: []
   } :
   {
-    date: new Date(),
     room: ROOM_SPECIFICATIONS[0]?.value,
     items: []
   }
@@ -58,8 +49,6 @@ const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSu
         initialValues={initialValues}
         validationSchema={Yup.object().shape({
           room: Yup.string().required(),
-          date: Yup.date(),
-          items: Yup.string()
         })}
         onSubmit={async (values, {
           resetForm,
@@ -68,7 +57,7 @@ const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSu
         }) => {
           try {
             resetForm();
-            if (editRoomSpecification) {
+            if (editSpecificationRoom) {
               onSubmitEdit({
                 ...values
               })
@@ -93,8 +82,6 @@ const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSu
           handleChange,
           handleSubmit,
           isSubmitting,
-          setFieldTouched,
-          setFieldValue,
           touched,
           values
         }) => (
@@ -103,7 +90,7 @@ const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSu
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title={`${editRoomSpecification ? 'Edit': 'Add'} Room Specification`} />
+                <CardHeader title={`${editSpecificationRoom ? 'Edit': 'Add'} Room Specification`} />
                 <Divider />
                 <CardContent>
                 <Grid
@@ -136,24 +123,6 @@ const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSu
                       ))}
                     </TextField>
                   </Grid>
-                  <Grid 
-                    item
-                    sm={12}
-                    >
-                    <KeyboardDatePicker
-                      className={classes.datePicker}
-                      label="Start Date"
-                      format="MM/DD/YYYY"
-                      name="date"
-                      inputVariant="outlined"
-                      fullWidth
-                      value={values.date}
-                      onBlur={() => setFieldTouched('date')}
-                      onClose={() => setFieldTouched('date')}
-                      onAccept={() => setFieldTouched('date')}
-                      onChange={(date) => setFieldValue('date', date)}
-                    />
-                  </Grid>
                 </Grid>
                   {errors.submit && (
                     <Box mt={3}>
@@ -176,7 +145,7 @@ const AddRoomModal = ({ className, editRoomSpecification, isOpen, onCancel, onSu
                     variant="contained"
                   >
                     {isSubmitting && <CircularProgress size='sm' />}
-                    {`${editRoomSpecification ? 'Edit': 'Add'} Room Specification`}
+                    {`${editSpecificationRoom ? 'Edit': 'Add'} Room`}
                     </Button>
                 </Box>
               </Card>
