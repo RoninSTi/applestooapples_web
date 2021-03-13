@@ -36,9 +36,9 @@ const SpecificationItemForm = ({
     <>
       <Grid item md={12} xs={12}>
         <TextField
-          error={Boolean(touched.material && errors.material)}
+          error={Boolean(touched.category && errors.category)}
           fullWidth
-          helperText={touched.material && errors.material}
+          helperText={touched.category && errors.category}
           label="Category"
           name="category"
           onBlur={handleBlur}

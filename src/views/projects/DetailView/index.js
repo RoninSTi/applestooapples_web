@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import Page from 'src/components/Page'
 
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'src/store'
 import { clearDetail, getProject, updateProject } from 'src/slices/projects'
@@ -119,7 +119,12 @@ const ListView = () => {
           {currentTab === 'description' && <ProjectDescription project={project} />}
           {currentTab === 'scope' && <Scope isSubmitting={isSubmitting} project={project} onUpdate={handleOnUpdate} />}
           {currentTab === 'documents' && <Documents project={project} />}
-          {currentTab === 'specifications' && <Specifications project={project} />}
+          {currentTab === 'specifications' &&
+            <>
+              <Redirect to={`/app/management/projects/${project.id}`} />
+              <Specifications project={project} />
+            </>
+          }
         </Box>
       </Container>
     </Page>

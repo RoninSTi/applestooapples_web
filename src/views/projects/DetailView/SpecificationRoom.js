@@ -20,13 +20,16 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import {
   Check as CheckIcon,
+  Copy as CopyIcon,
   Edit2 as PencilIcon,
   Trash as TrashIcon,
   X as XIcon,
 } from 'react-feather';
 
-import { deleteProjectSpecification } from 'src/slices/projects'
+import { copySpecification, deleteProjectSpecification } from 'src/slices/projects'
 import { ROOM_SPECIFICATIONS } from 'src/utils/enums'
+
+import CopySpecificationRoomModal from './CopySpecificationRoomModal'
 
 const useStyles = makeStyles((theme) => ({
   popper: {
@@ -44,11 +47,37 @@ const SpecificationRoom = ({ onClickEdit, projectId, specification }) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
   const [specificationToDelete, setRoomSpecificationToDelete] = useState(null)
 
   const dispatch = useDispatch()
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const handleOnClickCopy = () => {
+    setIsOpen(true);
+  }
+
+  const handleOnClickCancelCopy = () => {
+    setIsOpen(false);
+  }
+
+  const handleOnSubmitCopy = async data => {
+    try {
+      await dispatch(copySpecification({
+        roomSpecificationId: specification.id,
+        data
+      }));
+
+      enqueueSnackbar('Room copied', {
+        variant: 'success'
+      });
+    } catch (err) {
+      enqueueSnackbar(err.message, {
+        variant: 'error'
+      });
+    }
+  }
 
   const handleOnClickCancelDelete = () => {
     setAnchorEl(null)
@@ -112,6 +141,11 @@ const SpecificationRoom = ({ onClickEdit, projectId, specification }) => {
               <TrashIcon />
             </SvgIcon>
           </IconButton>
+          <IconButton onClick={handleOnClickCopy}>
+            <SvgIcon fontSize="small">
+              <CopyIcon />
+            </SvgIcon>
+          </IconButton>
           <IconButton onClick={handleOnClickEdit}>
             <SvgIcon fontSize="small">
               <PencilIcon />
@@ -138,7 +172,12 @@ const SpecificationRoom = ({ onClickEdit, projectId, specification }) => {
             </div>
           </Paper>
         }
-      </Popper>      
+      </Popper>  
+      <CopySpecificationRoomModal
+        isOpen={isOpen}
+        onCancel={handleOnClickCancelCopy}
+        onSubmit={handleOnSubmitCopy}
+      />
     </>
   );
 };

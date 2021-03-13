@@ -84,9 +84,6 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
       um: ''
     }
   
-  console.log({ initialValues })
-
-  
   return (
     <Dialog open={isOpen}>
       <Formik
@@ -147,7 +144,6 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
           touched,
           values
         }) => {
-          console.log({ values })
           return (
             <form onSubmit={handleSubmit}>
               <Card

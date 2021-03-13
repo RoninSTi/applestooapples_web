@@ -75,6 +75,22 @@ export const CATEGORIES = [
   { label: "Hardware", value: "hardware" },
 ];
 
+export const PROJECT_STATUS = [
+  {
+    label: 'Pre-Construction',
+    value: 'pre'
+  }, {
+    label: 'Under Construction',
+    value: 'under'
+  }, {
+    label: 'Finish Stage',
+    value: 'finish'
+  }, {
+    label: 'Completed',
+    value: 'complete'
+  }
+]
+
 export const PROJECT_TYPES = [
   {
     label: 'New',
@@ -165,4 +181,9 @@ export const ROOM_SPECIFICATIONS = [
   { label: 'Sun', value: 'sun'},
   { label: 'Wine', value: 'wine'},
   { label: 'Other', value: 'other'}
+]
+
+export const ROOM_SPECIFICATION_COPY_DEPTHS = [
+  { label: 'Categories only', value: 'shallow' },
+  { label: 'Categories and items', value: 'full' }
 ]

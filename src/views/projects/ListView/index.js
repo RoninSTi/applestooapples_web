@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from 'src/store'
 import { copyProject, deleteProject, getProjects } from 'src/slices/projects'
 import {
   Check as CheckIcon,
+  Home as HomeIcon,
   Trash as TrashIcon,
   Search as SearchIcon,
   X as XIcon,
@@ -233,6 +234,19 @@ const ListView = () => {
   const paginatedProjects = applyPagination(sortedProjects, page, limit);
 
   const popperIsOpen = Boolean(anchorEl)
+  
+  const iconColor = project => {
+      switch (project?.status) {
+        case 'pre':
+          return 'blue'
+        case 'under':
+          return 'orange'
+        case 'finish':
+          return 'yellow'
+        case 'complete':
+          return 'green'
+      }
+  }
 
   return (
     <Page
@@ -321,6 +335,7 @@ const ListView = () => {
               <Table>
                 <TableHead>
                   <TableRow>
+                    <TableCell />
                     <TableCell>Name</TableCell>
                     <TableCell>Address</TableCell>
                     <TableCell>Type</TableCell>
@@ -337,6 +352,14 @@ const ListView = () => {
                         hover
                         key={project.id}
                       >
+                        <TableCell>
+                          <SvgIcon fontSize="small" style={{
+                            color: iconColor(project)
+                          }}>
+
+                            <HomeIcon />
+                          </SvgIcon>
+                        </TableCell>
                         <TableCell>
                           <Box
                             display="flex"

@@ -47,7 +47,7 @@ import CollaboratorInvite from './CollaboratorInvite'
 import DraftEditor from 'src/components/DraftEditor'
 import Page from 'src/components/Page';
 
-import { ADDRESS_TYPES, COLLABORATOR_ROLES, INVITATION_STATUS, PROJECT_TYPES } from 'src/utils/enums'
+import { ADDRESS_TYPES, COLLABORATOR_ROLES, INVITATION_STATUS, PROJECT_STATUS, PROJECT_TYPES } from 'src/utils/enums'
 
 const nanoid = customAlphabet('1234567890abcdef', 6)
 
@@ -176,6 +176,7 @@ const ProjectCreateView = () => {
             size: 'md',
             scope: '',
             startDate: new Date(),
+            status: 'pre',
             type: 'new',
           }}
           validationSchema={Yup.object().shape({
@@ -296,7 +297,7 @@ const ProjectCreateView = () => {
                         variant="outlined"
                       />
                       </Grid>
-                      <Grid item md={12} sm={12}>
+                      <Grid item md={6} sm={12}>
                         <TextField
                           error={Boolean(touched.type && errors.type)}
                           fullWidth
@@ -319,7 +320,31 @@ const ProjectCreateView = () => {
                             </option>
                           ))}
                         </TextField>
-                      </Grid>
+                        </Grid>
+                        <Grid item md={6} sm={12}>
+                          <TextField
+                            error={Boolean(touched.status && errors.status)}
+                            fullWidth
+                            helperText={touched.status && errors.status}
+                            label="Status"
+                            name="status"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            select
+                            SelectProps={{ native: true }}
+                            value={values.status}
+                            variant="outlined"
+                          >
+                            {PROJECT_STATUS.map(({ label, value }) => (
+                              <option
+                                key={value}
+                                value={value}
+                              >
+                                {label}
+                              </option>
+                            ))}
+                          </TextField>
+                        </Grid>
                       <Grid item md={12} sm={12}>
                         <TextField
                           error={Boolean(touched.size && errors.size)}

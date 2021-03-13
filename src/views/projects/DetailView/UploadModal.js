@@ -105,7 +105,7 @@ const UploadModal = ({ isOpen, onCancel, projectId }) => {
   }
 
   return (
-    <Dialog open={isOpen} fullWidth='md'>
+    <Dialog open={isOpen} fullWidth>
       <Card
         className={clsx(classes.root)}
       >
@@ -141,7 +141,7 @@ const UploadModal = ({ isOpen, onCancel, projectId }) => {
                   className={classes.uploadButton}
                   color="secondary"
                   component="span" >
-                  <SvgIcon fontSize="medium">
+                  <SvgIcon fontSize="large">
                     <PlusIcon />
                   </SvgIcon>
                 </Button>
