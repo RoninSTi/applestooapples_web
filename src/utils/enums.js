@@ -58,7 +58,7 @@ export const INVITATION_STATUS = [
     label: 'Reminded',
     value: 'reminded'
   }, {
-    label: 'Unasked',
+    label: 'Not yet invited',
     value: 'unasked'
   }
 ];
@@ -67,7 +67,7 @@ export const CATEGORIES = [
   { label: "Plumbing", value: "plumbing" },
   { label: "Lighting", value: "lighting" },
   { label: "Finishes", value: "finishes" },
-  { label: "Stone", value: "stone" },
+  { label: "Tile and Stone", value: "stone" },
   { label: "Appliances", value: "appliances" },
   { label: "Accessories", value: "accessories" },
   { label: "Upholstery", value: "upholstery" },
@@ -181,6 +181,10 @@ export const ROOM_SPECIFICATIONS = [
   { label: 'Sun', value: 'sun'},
   { label: 'Wine', value: 'wine'},
   { label: 'Other', value: 'other'}
+]
+
+export const ROOM_SPECIFICATION_SOURCES = [
+  { label: 'Existing projects', value: 'project' },
 ]
 
 export const ROOM_SPECIFICATION_COPY_DEPTHS = [

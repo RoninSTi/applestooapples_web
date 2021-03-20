@@ -73,7 +73,7 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
       description: '',
       dimensions: '',
       finish: '',
-      item: '',
+      item: 'Sink',
       manufacturer: '',
       category: CATEGORIES[0].value,
       model: '',

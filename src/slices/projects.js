@@ -224,6 +224,16 @@ export const copySpecification = ({ data, roomSpecificationId }) => async dispat
   dispatch(slice.actions.updateProject({ project: response.data }))
 }
 
+export const createSpecificationFromSource = ({ data, projectId }) => async dispatch => {
+  const response = await api({
+    method: 'post',
+    url: `project/${projectId}/addspecification`,
+    data
+  });
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
 export const editProjectSpecification = ({ data, roomSpecificationId }) => async dispatch => {
   const response = await api({
     method: 'put',

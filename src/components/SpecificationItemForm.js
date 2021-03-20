@@ -16,6 +16,172 @@ const useStyles = makeStyles(() => ({
   numberField: { appearance: 'none' }
 }));
 
+const items = {
+  accessories: [
+    'Towel Bar',
+    'Towel Ring',
+    'Paper Holder',
+    'Spare Paper Holder',
+    'Hook',
+    'Warming Towel Bar',
+    'Shelf',
+    'Soap Dish',
+    'Toothbrush Holder',
+    'Tumbler',
+    'Hotel rack',
+    'Mirror',
+    'Magnifying mirror',
+  ],
+  appliances: [
+    'Refrigerator',
+    'Outdoor refrigerator',
+    'Under counter refrigerator',
+    'Range',
+    'Cooktop',
+    'Oven',
+    'Oven 2',
+    'Steam Oven',
+    'Pizza Oven',
+    'Warming Drawer',
+    'Microwave',
+    'Freezer',
+    'Dishwasher 1',
+    'Dishwasher 2',
+    'Hood Vent',
+    'Beverage cooler',
+    'Beverage Drawer',
+    'Ice Maker',
+    'Water Dispenser',
+    'Built-in Coffee Maker',
+    'Disposal',
+    'Washer',
+    'Dryer'
+  ],
+  furnishings: [
+    'Tables',
+    'Kitchen Table',
+    'Dining Room Table',
+    'Outdoor Dining Table',
+    'Coffee Table',
+    'End Table',
+    'Side Table',
+    'Console',
+    'Nightstand',
+    'Changing Table',
+    'Game Table',
+    'Billiards Table',
+    'Ping Pong Table',
+    'Seating',
+    'Kitchen Chair',
+    'Dining Room Chair',
+    'Bar stools',
+    'Side Chair',
+    'Rocking Chair',
+    'Arm Chair',
+    'Desk Chair',
+    'Bench',
+    'Sofa',
+    'Sleeper Sofa',
+    'Loveseat',
+    'Sette',
+    'Ottoman',
+    'Home Theater Seats',
+    'Outdoor sofa',
+    'Outdoor chairs',
+    'Beds',
+    'Headboard',
+    'Four - poster bed',
+    'Murphy bed',
+    'Platform bed',
+    'Sleigh bed',
+    'Canopy bed',
+    'Bunk',
+    'Crib',
+    'Mattress - King',
+    'Mattress - Queen',
+    'Mattress - Full ',
+    'Mattress - Twin',
+    'Mattress - Bunk',
+    'Mattress - Crib',
+    'Desk',
+    'Bookshelf / bookcase',
+    'Filing Cabinet',
+    'Dresser',
+    'Sideboard',
+    'Hutch',
+    'Etagere',
+    'Bar Cabinet',
+    'Entertainment Cabinet',
+    'Piano',
+  ],
+  hardware: [
+    'Handle set - Passage',
+    'Handle set - Privacy',
+    'Handle set - Dummy',
+    'Handle set - Door stop',
+    'Window Hardware'
+  ],
+  lighting: [
+    'Fan / Light',
+    'Accent Light',
+    'Surface Fixture',
+    'Recessed Fixture',
+    'Cove Lighting',
+    'Under cabinet lighting',
+    'Ceiling Fan',
+    'Chandelier',
+    'Accent Sconces',
+    'Beam Spot Light',
+    'Hanging Pendant',
+  ],
+  plumbing: [
+    'Sink',
+    'Faucet',
+    'Drain',
+    'P-trap',
+    'Toilet',
+    'Toilet seat',
+    'Toilet Lever',
+    'Bidet',
+    'Tub',
+    'Tub Filler',
+    'Tub Drain',
+    'Shower head',
+    'Shower arm',
+    'Shower system',
+    'Shower trim',
+    'Hand shower',
+    'Shower Drain',
+    'Shower Drain Cover',
+    'Body sprays',
+    'Supply Kit',
+    'Steam Unit',
+    'Volume control trim',
+    'Volume control rough',
+    'Diverter Trim',
+    'Diverter Rough',
+    'Basket strainer grid'
+  ],
+  stone: [
+    'Floor Tile',
+    'Base Tile',
+    'Trim Tile',
+    'Field Tile',
+    'Chair Rail',
+    'Upper Field Tile',
+    'Backsplash',
+    'Crown Molding',
+    'Shower floor',
+    'Shower walls',
+    'Vanity Countertop material',
+    'Shower Curb',
+    'Bench seat',
+    'Niche shelves',
+    'Countertop material',
+    'Backsplash'
+  ]
+}
+
 const SpecificationItemForm = ({
   errors,
   handleBlur,
@@ -65,9 +231,18 @@ const SpecificationItemForm = ({
           name="item"
           onBlur={handleBlur}
           onChange={handleChange}
+          select
+          SelectProps={{ native: true }}
           value={values.item}
           variant="outlined"
-        />
+        >
+          <option value=''>Select item</option>
+          {items[values.category]?.map((item, index) => (
+            <option key={`item-${index}`} value={item}>
+              {item}
+            </option>
+          ))}
+        </TextField>
       </Grid>
       <Grid item md={4} xs={4}>
         <TextField

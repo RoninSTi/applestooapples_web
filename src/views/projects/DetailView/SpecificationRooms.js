@@ -7,6 +7,8 @@ import {
   CardContent,
   CardHeader,
   Divider,
+  IconButton,
+  SvgIcon,
   Table,
   TableBody,
   TableCell,
@@ -16,23 +18,39 @@ import {
   Typography
 } from '@material-ui/core';
 
-import { useDispatch } from 'react-redux'
-import { createProjectSpecification, editProjectSpecification } from '../../../slices/projects'
+import {
+  PlusSquare as AddIcon,
+  Copy as CopyIcon,
+} from 'react-feather';
+
+import { useDispatch, useSelector } from 'react-redux'
+import { createSpecificationFromSource, createProjectSpecification, editProjectSpecification } from 'src/slices/projects'
 
 import { useSnackbar } from 'notistack';
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import AddRoomModal from './AddRoomModal'
+import CopySpecificationModal from './CopySpecificationModal';
 import SpecificationRoom from './SpecificationRoom'
 
 const SpecificationRooms = ({ specifications, projectId }) => {
   const dispatch = useDispatch()
 
+  const projects = useSelector(state => state.projects.projects.map(project => ({
+    label: project.name,
+    value: project.id
+  })).filter(({ value }) => value !== projectId))
+
   const { enqueueSnackbar } = useSnackbar();
 
+  const [copySpecificationIsOpen, setCopySpecificationIsOpen] = useState(false)
   const [roomSpecificationIsOpen, setRoomSpecificationIsOpen] = useState(false)
   const [editSpecificationRoom, setEditSpecificationRoom] = useState(null)
+
+  const handleOnClickCopyRoomSpecification = () => {
+    setCopySpecificationIsOpen(true)
+  }
 
   const handleOnClickAddRoomSpecification = () => {
     setRoomSpecificationIsOpen(true)
@@ -42,6 +60,23 @@ const SpecificationRooms = ({ specifications, projectId }) => {
     setEditSpecificationRoom(er)
 
     setRoomSpecificationIsOpen(true)
+  }
+
+  const handleOnSubmitCopyRoomSpecification = async data => {
+    try {
+      await dispatch(createSpecificationFromSource({
+        data,
+        projectId
+      }))
+        
+      enqueueSnackbar('Specification added', {
+        variant: 'success'
+      });
+    } catch (err) {
+      enqueueSnackbar(err.message, {
+        variant: 'error'
+      });
+    }
   }
 
   const handleOnSubmitRoomSpecification = async specification => {
@@ -86,11 +121,29 @@ const SpecificationRooms = ({ specifications, projectId }) => {
     setRoomSpecificationIsOpen(false);
   }
 
+  const handleCopySpecificationModalOnCancel = () => {
+    setCopySpecificationIsOpen(false);
+  }
+
   return (
     <>
     <Card>
       <CardHeader
-        action={<Button color="secondary" onClick={handleOnClickAddRoomSpecification}>Add Room</Button>} />
+          action={
+            <Box>
+              {specifications.length === 0 &&
+                <IconButton onClick={handleOnClickCopyRoomSpecification}>
+                  <SvgIcon color="primary" fontSize="small">
+                    <CopyIcon />
+                  </SvgIcon>
+                </IconButton>
+              }
+              <IconButton onClick={handleOnClickAddRoomSpecification}>
+                <SvgIcon color="primary" fontSize="small">
+                  <AddIcon />
+                </SvgIcon>
+              </IconButton>
+              </Box>} />
       <Divider />
       <CardContent>
         {specifications.length > 0 ? (
@@ -117,13 +170,15 @@ const SpecificationRooms = ({ specifications, projectId }) => {
                 </Table>
               </TableContainer>
             </Box>
-          </PerfectScrollbar>) : (
-            <Typography
-              variant="body2"
-              color="textSecondary"
-            >
-              No specifications added.
-            </Typography>
+            </PerfectScrollbar>) : (
+              <Box>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                >
+                  No specifications added.
+              </Typography>
+              </Box>
           )}
       </CardContent>
 
@@ -134,6 +189,12 @@ const SpecificationRooms = ({ specifications, projectId }) => {
         onCancel={handleAddRoomModalOnCancel}
         onSubmit={handleOnSubmitRoomSpecification}
         onSubmitEdit={handleOnSubmitEditRoomSpecification}
+      />
+      <CopySpecificationModal
+        isOpen={copySpecificationIsOpen}
+        onCancel={handleCopySpecificationModalOnCancel}
+        onSubmit={handleOnSubmitCopyRoomSpecification}
+        projects={projects}
       />
     </>
   )

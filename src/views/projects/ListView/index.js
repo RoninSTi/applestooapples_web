@@ -116,11 +116,6 @@ const applySort = (projects, sort) => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    // backgroundColor: theme.palette.background.dark,
-    // paddingTop: theme.spacing(3),
-    // paddingBottom: theme.spacing(3)
-  },
   queryField: {
     width: 500
   },
@@ -249,10 +244,7 @@ const ListView = () => {
   }
 
   return (
-    <Page
-      className={classes.root}
-      title="Projects"
-    >
+    <Page title="Projects">
       <Container maxWidth="lg">
         <Box mt={6} mb={6}>
           <Breadcrumbs
@@ -271,7 +263,13 @@ const ListView = () => {
               variant="body1"
               color="textPrimary"
             >
-              Projects
+              <Link 
+                variant="body1"
+                color="inherit"
+                to="/app/management/projects"
+                component={RouterLink}>
+                Projects
+                </Link>
             </Typography>
           </Breadcrumbs>
           <Typography

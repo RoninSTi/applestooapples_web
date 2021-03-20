@@ -4,8 +4,7 @@ import {
   Container,
   Divider,
   Tab,
-  Tabs,
-  makeStyles
+  Tabs
 } from '@material-ui/core';
 import Page from 'src/components/Page'
 
@@ -24,18 +23,7 @@ import ProjectDescription from './ProjectDescription'
 import Scope from './Scope'
 import Specifications from './Specifications'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.dark,
-    minHeight: '100%',
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3)
-  }
-}));
-
 const ListView = () => {
-  const classes = useStyles();
-
   const { projectId } = useParams()
 
   const dispatch = useDispatch()
@@ -92,9 +80,9 @@ const ListView = () => {
   }
 
   return (
-    <Page className={classes.root}>
+    <Page>
       <Container maxWidth="lg">
-        <Header />
+        <Header name={project?.name} />
         <Box mt={3}>
           <Tabs
             onChange={handleTabsChange}
