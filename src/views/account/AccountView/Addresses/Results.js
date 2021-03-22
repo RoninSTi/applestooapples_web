@@ -22,8 +22,6 @@ import {
   Trash as TrashIcon,
   X as XIcon
 } from 'react-feather';
-import { useDispatch } from 'src/store'
-import { deleteAddress } from 'src/slices/address'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -32,8 +30,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Results = ({ accountId, addresses, onClickEdit }) => {
-  const dispatch = useDispatch()
+const Results = ({ addresses, onClickEdit }) => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
   const [addressToDelete, setAddressToDelete] = useState(null)

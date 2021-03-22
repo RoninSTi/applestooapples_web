@@ -7,12 +7,6 @@ import { useSnackbar } from 'notistack'
 
 import {
   Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Collapse,
   IconButton,
   makeStyles,
   Paper,
@@ -98,15 +92,7 @@ const CategoryItem = ({ category, item, onEdit }) => {
           variant="body2"
           color="textSecondary"
         >
-          {item.cost}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.currency}
+          {`$ ${parseFloat(item.cost).toFixed(2)}`}
         </Typography>
       </TableCell>
       <TableCell>
@@ -202,7 +188,7 @@ const CategoryItem = ({ category, item, onEdit }) => {
           variant="body2"
           color="textSecondary"
         >
-          {item.total}
+        {`$ ${parseFloat(item.total).toFixed(2)}`}
         </Typography>
       </TableCell>
       <TableCell align="right">

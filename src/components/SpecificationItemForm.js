@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Grid, makeStyles, TextField } from "@material-ui/core";
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import {
   CATEGORIES,
-  CURRENCY,
   PHASES,
   PROVIDED
 } from 'src/utils/enums'
@@ -186,15 +186,19 @@ const SpecificationItemForm = ({
   errors,
   handleBlur,
   handleChange,
+  setFieldValue,
   touched,
   values
 }) => {
-
   const qty = isNaN(parseInt(values.qty)) ? 0 : parseInt(values.qty)
 
   const cost = isNaN(parseInt(values.cost)) ? 0 : parseInt(values.cost)
 
-  const total = cost * qty
+  useEffect(() => {
+    const total = cost * qty
+
+    setFieldValue('total', total)
+  }, [cost, qty, setFieldValue])
 
   const classes = useStyles()
 
@@ -245,18 +249,22 @@ const SpecificationItemForm = ({
         </TextField>
       </Grid>
       <Grid item md={4} xs={4}>
-        <TextField
+        <CurrencyTextField
           className={classes.numberField}
+          currencySymbol="$"
+          decimalCharacter="."
+          digitGroupSeparator=","
           error={Boolean(touched.cost && errors.cost)}
           fullWidth
           helperText={touched.cost && errors.cost}
           label="Cost"
+          minimumValue="0"
           name="cost"
           onBlur={handleBlur}
           onChange={handleChange}
-          type="number"
-          value={values.cost}
+          outputFormat="number"
           variant="outlined"
+          value={values.cost}
         />
       </Grid>
       <Grid item md={4} xs={4}>
@@ -275,41 +283,22 @@ const SpecificationItemForm = ({
         />
       </Grid>
       <Grid item md={4} xs={4}>
-        <TextField
-          error={Boolean(touched.currency && errors.currency)}
-          fullWidth
-          helperText={touched.currency && errors.currency}
-          label="Currency"
-          name="currency"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          select
-          SelectProps={{ native: true }}
-          value={values.currency}
-          variant="outlined"
-        >
-          {CURRENCY.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </TextField>
-      </Grid>
-      <Grid item md={12} xs={12}>
-        <TextField
+        <CurrencyTextField
+          currencySymbol="$"
+          decimalCharacter="."
+          digitGroupSeparator=","
           error={Boolean(touched.total && errors.total)}
           fullWidth
           helperText={touched.total && errors.total}
           label="Total"
+          minimumValue="0"
           name="total"
-          inputProps={{
-            readOnly: true,
-          }}
           onBlur={handleBlur}
           onChange={handleChange}
-          type="number"
-          value={total}
+          outputFormat="number"
+          readOnly
           variant="outlined"
+          value={values.total}
         />
       </Grid>
       <Grid item md={4} xs={4}>

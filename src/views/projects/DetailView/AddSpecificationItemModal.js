@@ -69,7 +69,6 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
     {
       comments: '',
       cost: 0,
-      currency: 'USD',
       description: '',
       dimensions: '',
       finish: '',
@@ -92,7 +91,6 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
           category: Yup.string(),
           comments: Yup.string(),
           cost: Yup.number(),
-          currency: Yup.string(),
           description: Yup.string(),
           dimensions: Yup.string(),
           finish: Yup.string(),

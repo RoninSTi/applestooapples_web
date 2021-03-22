@@ -147,7 +147,6 @@ const CategoryCard = ({ category, onEdit }) => {
                   <TableRow>
                     <TableCell>Comments</TableCell>
                     <TableCell>Cost</TableCell>
-                    <TableCell>Currency</TableCell>
                     <TableCell>Description</TableCell>
                     <TableCell>Dimensions</TableCell>
                     <TableCell>Finish</TableCell>

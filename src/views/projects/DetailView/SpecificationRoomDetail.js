@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from '../../../store'
 import {
   createProjectSpecificationItem,
-  deleteProjectSpecificationItem,
   editProjectSpecificationItem
 } from '../../../slices/projects'
 

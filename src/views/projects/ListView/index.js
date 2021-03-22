@@ -33,11 +33,11 @@ import { useDispatch, useSelector } from 'src/store'
 import { copyProject, deleteProject, getProjects } from 'src/slices/projects'
 import {
   Check as CheckIcon,
+  Copy as CopyIcon,
   Home as HomeIcon,
   Trash as TrashIcon,
   Search as SearchIcon,
   X as XIcon,
-  Zap as ZapIcon
 } from 'react-feather';
 
 import { PROJECT_TYPES } from 'src/utils/enums'
@@ -240,6 +240,8 @@ const ListView = () => {
           return 'yellow'
         case 'complete':
           return 'green'
+        default:
+          break
       }
   }
 
@@ -422,7 +424,7 @@ const ListView = () => {
                             {isCopying && projectToCopy?.id === project.id ? <CircularProgress size='sm' /> : (
                               <IconButton onClick={event => handleOnClickCopy(event, project)}>
                                 <SvgIcon fontSize='small'>
-                                  <ZapIcon />
+                                  <CopyIcon />
                                 </SvgIcon>
                               </IconButton>
                             )}
