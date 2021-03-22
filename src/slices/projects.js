@@ -185,4 +185,101 @@ export const updateProject = ({ projectId, data }) => async (dispatch) => {
   dispatch(slice.actions.updateProject({ project: response.data }))
 }
 
+export const createProjectSpecification = ({ data, projectId }) => async dispatch => {
+  const response = await api({
+    method: 'post',
+    url: `project/${projectId}/specification`,
+    data
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const copyCategory = ({ data, categoryId }) => async dispatch => {
+  const response = await api({
+    method: 'post',
+    url: `specificationcategory/${categoryId}/copy`,
+    data
+  });
+
+  dispatch(slice.actions.updateProject({ project: response.data }));
+}
+
+export const deleteCategory = ({ categoryId }) => async dispatch => {
+  const response = await api({
+    method: 'delete',
+    url: `specificationcategory/${categoryId}`
+  });
+
+  dispatch(slice.actions.updateProject({ project: response.data }));
+}
+
+export const copySpecification = ({ data, roomSpecificationId }) => async dispatch => {
+  const response = await api({
+    method: 'post',
+    url: `specification/${roomSpecificationId}/copy`,
+    data
+  });
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const createSpecificationFromSource = ({ data, projectId }) => async dispatch => {
+  const response = await api({
+    method: 'post',
+    url: `project/${projectId}/addspecification`,
+    data
+  });
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const editProjectSpecification = ({ data, roomSpecificationId }) => async dispatch => {
+  const response = await api({
+    method: 'put',
+    url: `specification/${roomSpecificationId}`,
+    data
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const deleteProjectSpecification = ({ roomSpecificationId }) => async dispatch => {
+  const response = await api({
+    method: 'delete',
+    url: `specification/${roomSpecificationId}`
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const createProjectSpecificationItem = ({ data, roomSpecificationId }) => async dispatch => {
+  const response = await api({
+    method: 'post',
+    url: `specification/${roomSpecificationId}/item`,
+    data
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const deleteProjectSpecificationItem = ({ specificationItemId }) => async dispatch => {
+  const response = await api({
+    method: 'delete',
+    url: `/specificationitem/${specificationItemId}`,
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
+export const editProjectSpecificationItem = ({ data, specificationItemId }) => async dispatch => {
+  const response = await api({
+    method: 'put',
+    url: `/specificationitem/${specificationItemId}`,
+    data
+  })
+
+  dispatch(slice.actions.updateProject({ project: response.data }))
+}
+
 export default slice;

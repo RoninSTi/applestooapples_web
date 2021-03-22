@@ -33,10 +33,11 @@ import { useDispatch, useSelector } from 'src/store'
 import { copyProject, deleteProject, getProjects } from 'src/slices/projects'
 import {
   Check as CheckIcon,
+  Copy as CopyIcon,
+  Home as HomeIcon,
   Trash as TrashIcon,
   Search as SearchIcon,
   X as XIcon,
-  Zap as ZapIcon
 } from 'react-feather';
 
 import { PROJECT_TYPES } from 'src/utils/enums'
@@ -115,11 +116,6 @@ const applySort = (projects, sort) => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    // backgroundColor: theme.palette.background.dark,
-    // paddingTop: theme.spacing(3),
-    // paddingBottom: theme.spacing(3)
-  },
   queryField: {
     width: 500
   },
@@ -233,12 +229,24 @@ const ListView = () => {
   const paginatedProjects = applyPagination(sortedProjects, page, limit);
 
   const popperIsOpen = Boolean(anchorEl)
+  
+  const iconColor = project => {
+      switch (project?.status) {
+        case 'pre':
+          return 'blue'
+        case 'under':
+          return 'orange'
+        case 'finish':
+          return 'yellow'
+        case 'complete':
+          return 'green'
+        default:
+          break
+      }
+  }
 
   return (
-    <Page
-      className={classes.root}
-      title="Projects"
-    >
+    <Page title="Projects">
       <Container maxWidth="lg">
         <Box mt={6} mb={6}>
           <Breadcrumbs
@@ -257,7 +265,13 @@ const ListView = () => {
               variant="body1"
               color="textPrimary"
             >
-              Projects
+              <Link 
+                variant="body1"
+                color="inherit"
+                to="/app/management/projects"
+                component={RouterLink}>
+                Projects
+                </Link>
             </Typography>
           </Breadcrumbs>
           <Typography
@@ -321,6 +335,7 @@ const ListView = () => {
               <Table>
                 <TableHead>
                   <TableRow>
+                    <TableCell />
                     <TableCell>Name</TableCell>
                     <TableCell>Address</TableCell>
                     <TableCell>Type</TableCell>
@@ -337,6 +352,14 @@ const ListView = () => {
                         hover
                         key={project.id}
                       >
+                        <TableCell>
+                          <SvgIcon fontSize="small" style={{
+                            color: iconColor(project)
+                          }}>
+
+                            <HomeIcon />
+                          </SvgIcon>
+                        </TableCell>
                         <TableCell>
                           <Box
                             display="flex"
@@ -401,7 +424,7 @@ const ListView = () => {
                             {isCopying && projectToCopy?.id === project.id ? <CircularProgress size='sm' /> : (
                               <IconButton onClick={event => handleOnClickCopy(event, project)}>
                                 <SvgIcon fontSize='small'>
-                                  <ZapIcon />
+                                  <CopyIcon />
                                 </SvgIcon>
                               </IconButton>
                             )}

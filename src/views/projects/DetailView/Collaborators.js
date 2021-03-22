@@ -5,7 +5,6 @@ import { useSnackbar } from 'notistack';
 
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -25,6 +24,7 @@ import {
 } from '@material-ui/core';
 import {
   Check as CheckIcon,
+  PlusSquare as AddIcon,
   Send as SendIcon,
   Trash as TrashIcon,
   X as XIcon,
@@ -165,7 +165,13 @@ const Collaborators = ({ project }) => {
         <Box mb={4}>
           <Card>
             <CardHeader
-              action={<Button color="secondary" onClick={handleOnClickAddCollaborator} disabled={collaborators.length === 9}>Add Collaborator</Button>} />
+              action={
+                <IconButton disabled={collaborators.length === 9} onClick={handleOnClickAddCollaborator}>
+                  <SvgIcon color="primary" fontSize="small">
+                    <AddIcon />
+                  </SvgIcon>
+                </IconButton>}
+              />
             <Divider />
             <CardContent>
               {collaborators.length > 0 ? (
@@ -201,6 +207,12 @@ const Collaborators = ({ project }) => {
                                   alignItems="center"
                                 >
                                   <div>
+                                    <Typography
+                                      variant="body2"
+                                      color="textSecondary"
+                                    >
+                                      {collaborator.companyName}
+                                    </Typography>
                                     <Typography
                                       variant="body2"
                                       color="textSecondary"

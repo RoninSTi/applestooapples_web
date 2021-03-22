@@ -5,7 +5,6 @@ import { useSnackbar } from 'notistack';
 
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -26,6 +25,7 @@ import {
 import {
   Check as CheckIcon,
   Edit2 as PencilIcon,
+  PlusSquare as AddIcon,
   Trash as TrashIcon,
   X as XIcon,
 } from 'react-feather';
@@ -172,7 +172,13 @@ const Addresses = ({ project }) => {
         <Box mb={4}>
           <Card>
             <CardHeader
-              action={<Button color="secondary" onClick={handleOnClickAdd}>Add Address</Button>} />
+              action={
+                <IconButton onClick={handleOnClickAdd}>
+                  <SvgIcon color="primary" fontSize="small">
+                    <AddIcon />
+                  </SvgIcon>
+                </IconButton>
+              } />
             <Divider />
             <CardContent>
               {addresses.length > 0 ? (

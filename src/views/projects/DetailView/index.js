@@ -4,12 +4,11 @@ import {
   Container,
   Divider,
   Tab,
-  Tabs,
-  makeStyles
+  Tabs
 } from '@material-ui/core';
 import Page from 'src/components/Page'
 
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'src/store'
 import { clearDetail, getProject, updateProject } from 'src/slices/projects'
@@ -22,19 +21,9 @@ import Documents from './Documents'
 import Header from './Header'
 import ProjectDescription from './ProjectDescription'
 import Scope from './Scope'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.dark,
-    minHeight: '100%',
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3)
-  }
-}));
+import Specifications from './Specifications'
 
 const ListView = () => {
-  const classes = useStyles();
-
   const { projectId } = useParams()
 
   const dispatch = useDispatch()
@@ -62,7 +51,8 @@ const ListView = () => {
     { value: 'collaborators', label: 'Collaborators' },
     { value: 'addresses', label: 'Addresses' },
     { value: 'scope', label: 'Scope' },
-    { value: 'documents', label: 'Documents'}
+    { value: 'documents', label: 'Documents'},
+    { value: 'specifications', label: 'Specifications'},
   ];
 
   const handleTabsChange = (_, value) => {
@@ -90,9 +80,9 @@ const ListView = () => {
   }
 
   return (
-    <Page className={classes.root}>
+    <Page>
       <Container maxWidth="lg">
-        <Header />
+        <Header name={project?.name} />
         <Box mt={3}>
           <Tabs
             onChange={handleTabsChange}
@@ -117,6 +107,12 @@ const ListView = () => {
           {currentTab === 'description' && <ProjectDescription project={project} />}
           {currentTab === 'scope' && <Scope isSubmitting={isSubmitting} project={project} onUpdate={handleOnUpdate} />}
           {currentTab === 'documents' && <Documents project={project} />}
+          {currentTab === 'specifications' &&
+            <>
+              <Redirect to={`/app/management/projects/${project.id}`} />
+              <Specifications project={project} />
+            </>
+          }
         </Box>
       </Container>
     </Page>

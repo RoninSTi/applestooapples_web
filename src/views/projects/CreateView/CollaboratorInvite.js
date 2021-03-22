@@ -40,6 +40,7 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
     <Dialog open={isOpen}>
       <Formik
         initialValues={{
+          companyName: '',
           email: '',
           firstName: '',
           invite: false,
@@ -47,6 +48,7 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
           role: availableCollaborators[0]?.value
         }}
         validationSchema={Yup.object().shape({
+          companyName: Yup.string().required(),
           email: Yup.string()
             .email('Must be a valid email')
             .max(255),
@@ -122,7 +124,25 @@ const CollaboratorInvite = ({ className, collaborators, isOpen, onCancel, onSubm
                           </option>
                         ))}
                       </TextField>
-                    </Grid>
+                  </Grid>
+                  <Grid
+                    item
+                    sm={12}
+                    xs={12}
+                  >
+                    <TextField
+                      error={Boolean(touched.companyName && errors.companyName)}
+                      fullWidth
+                      helperText={touched.companyName && errors.companyName}
+                      label="Company Name"
+                      name="companyName"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      type="text"
+                      value={values.companyName}
+                      variant="outlined"
+                    />
+                  </Grid>
                     <Grid
                       item
                       sm={6}
