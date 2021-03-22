@@ -124,13 +124,15 @@ const SpecificationRooms = ({ specifications, projectId }) => {
     setCopySpecificationIsOpen(false);
   }
 
+  const showCopyButton = specifications.length === 0 && projects.length > 0
+
   return (
     <>
     <Card>
       <CardHeader
           action={
             <Box>
-              {specifications.length === 0 &&
+              {showCopyButton &&
                 <IconButton onClick={handleOnClickCopyRoomSpecification}>
                   <SvgIcon color="primary" fontSize="small">
                     <CopyIcon />
