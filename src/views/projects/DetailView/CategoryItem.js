@@ -78,134 +78,133 @@ const CategoryItem = ({ category, item, onEdit }) => {
 
   return (
     <>
-    <TableRow key={item.id}>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.comments}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {`$ ${parseFloat(item.cost).toFixed(2)}`}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.description}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.dimensions}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.finish}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.item}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.manufacturer}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.material}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.model}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.phase}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.provided}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.qty}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-          {item.um}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >
-        {`$ ${parseFloat(item.total).toFixed(2)}`}
-        </Typography>
-      </TableCell>
-      <TableCell align="right">
-        <Box>
-          <IconButton onClick={handleOnClickDelete}>
-            <SvgIcon fontSize="small">
-              <TrashIcon />
-            </SvgIcon>
-          </IconButton>
-          <IconButton onClick={handleOnClickEdit}>
-            <SvgIcon fontSize="small">
-              <PencilIcon />
-            </SvgIcon>
-          </IconButton>
-        </Box>
-
-      </TableCell>
+      <TableRow key={item.id}>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.item === 'Other' ? item.item2 : item.item}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.qty}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.um}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.manufacturer}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.model}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.material}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.description}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.dimensions}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.comments}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.finish}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.provided}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {item.phase}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {`$${parseFloat(item.cost).toFixed(2)}`}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+          >
+            {`$${parseFloat(item.total).toFixed(2)}`}
+          </Typography>
+        </TableCell>
+        <TableCell align="right">
+          <Box>
+            <IconButton onClick={handleOnClickDelete}>
+              <SvgIcon fontSize="small">
+                <TrashIcon />
+              </SvgIcon>
+            </IconButton>
+            <IconButton onClick={handleOnClickEdit}>
+              <SvgIcon fontSize="small">
+                <PencilIcon />
+              </SvgIcon>
+            </IconButton>
+          </Box>
+        </TableCell>
       </TableRow>
 
       <Popper open={popperIsOpen} anchorEl={anchorEl}>
@@ -225,7 +224,7 @@ const CategoryItem = ({ category, item, onEdit }) => {
             </div>
           </Paper>
       </Popper>   
-      </>
+    </>
   )
 }
 

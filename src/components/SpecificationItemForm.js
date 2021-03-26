@@ -10,7 +10,6 @@ import {
   PROVIDED
 } from 'src/utils/enums'
 
-
 const useStyles = makeStyles(() => ({
   root: {},
   numberField: { appearance: 'none' }
@@ -31,6 +30,7 @@ const items = {
     'Hotel rack',
     'Mirror',
     'Magnifying mirror',
+    'Other'
   ],
   appliances: [
     'Refrigerator',
@@ -55,7 +55,8 @@ const items = {
     'Built-in Coffee Maker',
     'Disposal',
     'Washer',
-    'Dryer'
+    'Dryer',
+    'Other'
   ],
   furnishings: [
     'Tables',
@@ -113,13 +114,31 @@ const items = {
     'Bar Cabinet',
     'Entertainment Cabinet',
     'Piano',
+    'Other'
+  ],
+  finishes: [
+    'Walls - Paint',
+    'Walls - Paint Accent 1',
+    'Walls - Paint Accent 2',
+    'Walls - Decorative Paint',
+    'Walls - Plaster',
+    'Walls - Wallpaper',
+    'Walls - Wood Panelling',
+    'Trim - Paint',
+    'Ceiling - Paint',
+    'Ceiling - Decorative Paint',
+    'Ceiling - Plaster',
+    'Ceiling - Wallpaper',
+    'Ceiling - Wood Panelling',
+    'Other'
   ],
   hardware: [
     'Handle set - Passage',
     'Handle set - Privacy',
     'Handle set - Dummy',
     'Handle set - Door stop',
-    'Window Hardware'
+    'Window Hardware',
+    'Other'
   ],
   lighting: [
     'Fan / Light',
@@ -133,6 +152,13 @@ const items = {
     'Accent Sconces',
     'Beam Spot Light',
     'Hanging Pendant',
+    'Other'
+  ],
+  millwork: [
+    'Doors',
+    'Windows',
+    'Cabinets',
+    'Other'
   ],
   plumbing: [
     'Sink',
@@ -160,7 +186,8 @@ const items = {
     'Volume control rough',
     'Diverter Trim',
     'Diverter Rough',
-    'Basket strainer grid'
+    'Basket strainer grid',
+    'Other'
   ],
   stone: [
     'Floor Tile',
@@ -178,7 +205,13 @@ const items = {
     'Bench seat',
     'Niche shelves',
     'Countertop material',
-    'Backsplash'
+    'Backsplash',
+    'Other'
+  ],
+  upholstery: [
+    'Fabric',
+    'Trim',
+    'Other'
   ]
 }
 
@@ -192,7 +225,7 @@ const SpecificationItemForm = ({
 }) => {
   const qty = isNaN(parseInt(values.qty)) ? 0 : parseInt(values.qty)
 
-  const cost = isNaN(parseInt(values.cost)) ? 0 : parseInt(values.cost)
+  const cost = parseFloat(values.cost)
 
   useEffect(() => {
     const total = cost * qty
@@ -201,6 +234,10 @@ const SpecificationItemForm = ({
   }, [cost, qty, setFieldValue])
 
   const classes = useStyles()
+
+  const handleCurrencyChange = (e, value) => {
+    setFieldValue('cost', value)
+  }
 
   return (
     <>
@@ -248,25 +285,21 @@ const SpecificationItemForm = ({
           ))}
         </TextField>
       </Grid>
-      <Grid item md={4} xs={4}>
-        <CurrencyTextField
-          className={classes.numberField}
-          currencySymbol="$"
-          decimalCharacter="."
-          digitGroupSeparator=","
-          error={Boolean(touched.cost && errors.cost)}
-          fullWidth
-          helperText={touched.cost && errors.cost}
-          label="Cost"
-          minimumValue="0"
-          name="cost"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          outputFormat="number"
-          variant="outlined"
-          value={values.cost}
-        />
-      </Grid>
+      {values.item === 'Other' &&
+        <Grid item md={12} xs={12}>
+          <TextField
+            className={classes.numberField}
+            error={Boolean(touched.item2 && errors.item2)}
+            fullWidth
+            helperText={touched.item2 && errors.item2}
+            label="Other Item"
+            name="item2"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.item2}
+            variant="outlined"
+          />
+        </Grid>}
       <Grid item md={4} xs={4}>
         <TextField
           className={classes.numberField}
@@ -280,6 +313,25 @@ const SpecificationItemForm = ({
           type="number"
           value={values.qty}
           variant="outlined"
+        />
+      </Grid>
+      <Grid item md={4} xs={4}>
+        <CurrencyTextField
+          className={classes.numberField}
+          currencySymbol="$"
+          decimalCharacter="."
+          digitGroupSeparator=","
+          error={Boolean(touched.cost && errors.cost)}
+          fullWidth
+          helperText={touched.cost && errors.cost}
+          label="Cost"
+          minimumValue="0"
+          name="cost"
+          onBlur={handleBlur}
+          onChange={handleCurrencyChange}
+          outputFormat="number"
+          variant="outlined"
+          value={values.cost}
         />
       </Grid>
       <Grid item md={4} xs={4}>

@@ -73,6 +73,7 @@ export const CATEGORIES = [
   { label: "Upholstery", value: "upholstery" },
   { label: "Furnishings", value: "furnishings" },
   { label: "Hardware", value: "hardware" },
+  { label: "Millwork", value: "millwork"}
 ];
 
 export const PROJECT_STATUS = [

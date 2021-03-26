@@ -8,6 +8,7 @@ import { useSnackbar } from 'notistack'
 import {
   Box,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   Divider,
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CategoryCard = ({ category, onEdit }) => {
-  const { items, type } = category
+  const { items, total, type } = category
 
   const classes = useStyles()
 
@@ -145,19 +146,19 @@ const CategoryCard = ({ category, onEdit }) => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>Comments</TableCell>
-                    <TableCell>Cost</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Dimensions</TableCell>
-                    <TableCell>Finish</TableCell>
                     <TableCell>Item</TableCell>
-                    <TableCell>Manufacturer</TableCell>
-                    <TableCell>Material</TableCell>
-                    <TableCell>Model</TableCell>
-                    <TableCell>Phase</TableCell>
-                    <TableCell>Provided</TableCell>
                     <TableCell>QTY</TableCell>
                     <TableCell>U/M</TableCell>
+                    <TableCell>Manufacturer</TableCell>
+                    <TableCell>Model</TableCell>
+                    <TableCell>Material</TableCell>
+                    <TableCell>Description</TableCell>
+                    <TableCell>Dimensions</TableCell>
+                    <TableCell>Comments</TableCell>
+                    <TableCell>Finish</TableCell>
+                    <TableCell>Provided By</TableCell>
+                    <TableCell>Phase</TableCell>
+                    <TableCell>Cost</TableCell>
                     <TableCell align="right">Total</TableCell>
                     <TableCell align="right">Actions</TableCell>
                   </TableRow>
@@ -173,7 +174,12 @@ const CategoryCard = ({ category, onEdit }) => {
             <Typography>No items in this category.</Typography>
           </Box>
         }
-      </CardContent>
+        </CardContent>
+        <CardActions>
+          <Box display='flex' flex={1} justifyContent='flex-end' p={1}>
+            <Typography>{`Total: $${parseFloat(total).toFixed(2)}`}</Typography>
+          </Box>
+        </CardActions>
       </Card>
 
       <Popper open={popperIsOpen} anchorEl={anchorEl}>

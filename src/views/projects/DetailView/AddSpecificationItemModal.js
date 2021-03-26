@@ -57,6 +57,7 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
       dimensions: editSpecificationItem?.dimensions,
       finish: editSpecificationItem?.finish,
       item: editSpecificationItem?.item,
+      item2: editSpecificationItem?.item2,
       manufacturer: editSpecificationItem?.manufacturer,
       category: editSpecificationItem?.category,
       model: editSpecificationItem?.model,
@@ -73,6 +74,7 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
       dimensions: '',
       finish: '',
       item: 'Sink',
+      item2: '',
       manufacturer: '',
       category: CATEGORIES[0].value,
       model: '',
@@ -99,7 +101,7 @@ const AddSpecificationItemModal = ({ editSpecificationItem, className, isOpen, o
           model: Yup.string(),
           phase: Yup.string(),
           provided: Yup.string(),
-          qty: Yup.number(),
+          qty: Yup.number().min(0),
           total: Yup.number(),
           um: Yup.string()
         })}

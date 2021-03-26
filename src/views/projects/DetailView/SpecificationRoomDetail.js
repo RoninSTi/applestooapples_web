@@ -80,7 +80,7 @@ const SpecificationRoomDetail = () => {
           roomSpecificationId: specification.id
         }));
 
-        enqueueSnackbar('Address added to project', {
+        enqueueSnackbar('Item added', {
           variant: 'success'
         });
       } catch (err) {
@@ -120,7 +120,7 @@ const SpecificationRoomDetail = () => {
         </Link>
       </Box>
       <Box display="flex" justifyContent="space-between" marginTop={2}>
-        <Typography variant="h3">
+        <Typography variant="h3" color="textPrimary">
           {ROOM_SPECIFICATIONS.find(({ value }) => value === room).label}
         </Typography>
         <Button
