@@ -1,4 +1,4 @@
-import React, { useState } from 'react' 
+import React, { useEffect, useMemo, useState } from 'react' 
 
 import { useDispatch } from 'src/store'
 import { copyCategory, deleteCategory } from 'src/slices/projects'
@@ -17,17 +17,13 @@ import {
   Paper,
   Popper,
   SvgIcon,
-  Table,
-  TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
   Typography
 } from '@material-ui/core';
 
 import {
   Check as CheckIcon,
+  Columns as ColumnsIcon,
   Copy as CopyIcon,
   Trash as TrashIcon,
   X as XIcon,
@@ -37,7 +33,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import { CATEGORIES } from 'src/utils/enums';
 
-import CategoryItem from './CategoryItem';
+import CategoryItemTable from './CategoryItemTable';
 import CopyCategoryModal from './CopyCategoryModal';
 
 const useStyles = makeStyles((theme) => ({
@@ -50,6 +46,88 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CategoryCard = ({ category, onEdit }) => {
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Item',
+        accessor: 'item'
+      },
+      {
+        Header: 'QTY',
+        accessor: 'qty',
+      },
+      {
+        Header: 'U/M',
+        accessor: 'um'
+      },
+      {
+        Header: 'Manufacturer',
+        accessor: 'manufacturer'
+      },
+      {
+        Header: 'Model',
+        accessor: 'model'
+      },
+      {
+        Header: 'Material',
+        accessor: 'material'
+      },
+      {
+        Header: 'Description',
+        accessor: 'description'
+      },
+      {
+        Header: 'Dimensions',
+        accessor: 'dimensions'
+      },
+      {
+        Header: 'Comments',
+        accessor: 'comments'
+      },
+      {
+        Header: 'Finish',
+        accessor: 'finish'
+      },
+      {
+        Header: 'Provided By',
+        accessor: 'provided'
+      },
+      {
+        Header: 'Phase',
+        accessor: 'phase'
+      },
+      {
+        Header: 'Cost',
+        accessor: 'cost'
+      },
+      {
+        Header: 'Total',
+        accessor: 'total'
+      },
+      {
+        Header: 'Actions',
+        accessor: 'actions'
+      }
+    ],
+    []
+  )
+
+  const [initialCols, setInitialCols] = useState(null)
+
+  useEffect(() => {
+    const visibleColumnIdsRaw = window.localStorage.getItem(`${category.type.toUpperCase()}-COLS`)
+
+    const visibleColumnIds = JSON.parse(visibleColumnIdsRaw)
+
+    const hiddenColumnIds = columns
+      .map(({ accessor }) => {
+        return visibleColumnIds.indexOf(accessor) === -1 ? accessor : undefined
+      })
+      .filter(elem => elem !== undefined)
+    
+    setInitialCols(hiddenColumnIds)
+  }, [category.type, columns])
+
   const { items, total, type } = category
 
   const classes = useStyles()
@@ -60,6 +138,7 @@ const CategoryCard = ({ category, onEdit }) => {
 
   const [anchorEl, setAnchorEl] = useState(null)
   const [isOpen, setIsOpen] = useState(false);
+  const [colDialogIsOpen, setColDialogIsOpen] = useState(false);
 
   const handleOnClickCopy = () => {
     setIsOpen(true);
@@ -102,6 +181,14 @@ const CategoryCard = ({ category, onEdit }) => {
     }
   }
 
+  const handleOnClickColumns = () => {
+    setColDialogIsOpen(true)
+  }
+
+  const handleOnCloseColDialog = () => {
+    setColDialogIsOpen(false)
+  }
+
   const handleOnClickCancelDelete = () => {
     setAnchorEl(null)
   }
@@ -110,7 +197,7 @@ const CategoryCard = ({ category, onEdit }) => {
     setAnchorEl(anchorEl ? null : e.currentTarget);
    }
   
-  const handleOnClickEdit = ({ item }) => { 
+  const handleOnClickEdit = ({ item }) => {
     onEdit({ item })
   }
 
@@ -132,6 +219,11 @@ const CategoryCard = ({ category, onEdit }) => {
                 <CopyIcon />
               </SvgIcon>
             </IconButton>
+            <IconButton onClick={handleOnClickColumns}>
+              <SvgIcon color="primary" fontSize="small">
+                <ColumnsIcon />
+              </SvgIcon>
+            </IconButton>
           </>
         }
         title={CATEGORIES.find(({ value }) => value === type).label }/>
@@ -140,33 +232,16 @@ const CategoryCard = ({ category, onEdit }) => {
         {items.length > 0 &&
           <PerfectScrollbar>
             <TableContainer>
-              <Table
-                size="small"
-                aria-label="purchases"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Item</TableCell>
-                    <TableCell>QTY</TableCell>
-                    <TableCell>U/M</TableCell>
-                    <TableCell>Manufacturer</TableCell>
-                    <TableCell>Model</TableCell>
-                    <TableCell>Material</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Dimensions</TableCell>
-                    <TableCell>Comments</TableCell>
-                    <TableCell>Finish</TableCell>
-                    <TableCell>Provided By</TableCell>
-                    <TableCell>Phase</TableCell>
-                    <TableCell>Cost</TableCell>
-                    <TableCell align="right">Total</TableCell>
-                    <TableCell align="right">Actions</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {items.map(item => <CategoryItem key={`catItem-${item.id}`} category={type} onEdit={handleOnClickEdit} item={item} />)}
-                </TableBody>
-              </Table>
+              {initialCols &&
+                <CategoryItemTable
+                  category={category.type}
+                  columns={columns}
+                  data={items}
+                  initialCols={initialCols}
+                  isOpen={colDialogIsOpen}
+                  onEdit={handleOnClickEdit}
+                  onClose={handleOnCloseColDialog}
+                />}
             </TableContainer>
           </PerfectScrollbar>}
         {items.length === 0 &&
@@ -198,10 +273,10 @@ const CategoryCard = ({ category, onEdit }) => {
               </IconButton>
             </div>
           </Paper>
-      </Popper>  
+      </Popper>
 
       <CopyCategoryModal onCancel={handleOnClickCopyCancel} onSubmit={handleOnClickCopySubmit} isOpen={isOpen} />
-      </>
+    </>
   )
 }
 
