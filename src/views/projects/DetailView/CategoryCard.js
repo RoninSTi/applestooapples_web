@@ -117,7 +117,7 @@ const CategoryCard = ({ category, onEdit }) => {
   useEffect(() => {
     const visibleColumnIdsRaw = window.localStorage.getItem(`${category.type.toUpperCase()}-COLS`)
 
-    const visibleColumnIds = JSON.parse(visibleColumnIdsRaw)
+    const visibleColumnIds = JSON.parse(visibleColumnIdsRaw) || columns.map(({ accessor }) => accessor)
 
     const hiddenColumnIds = columns
       .map(({ accessor }) => {
